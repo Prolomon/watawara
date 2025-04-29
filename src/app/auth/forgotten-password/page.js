@@ -1,7 +1,7 @@
 import Image from "next/image"
 import {images} from "@/constants"
 import Link from "next/link"
-import { forgottenPassword } from "@/backend/action/forgotten-password"
+import { forgottenPassword } from "@/backend/action/user"
 import Input from "@/utilities/input/Input"
 
 export const metadata = {

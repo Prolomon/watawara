@@ -11,7 +11,7 @@ export default function Language ({curLanguage}) {
         setSearchTerm(e.target.value.toLowerCase());
     }
 
-    const language = ["English", "French"];
+    const language = ["English"];
 
     const filteredLanguage = language.filter(country =>
         country.toLowerCase().includes(searchTerm)

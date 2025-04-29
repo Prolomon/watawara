@@ -10,7 +10,7 @@ export default function Country ({curCountry}) {
     }
 
     const countries = [
-        "Nigeria", "South Africa", "Ghana", "Kenya"
+        "Nigeria"
     ];
 
     const filteredCountries = countries.filter(country =>

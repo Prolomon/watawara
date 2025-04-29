@@ -1,7 +1,7 @@
 "use server"
 import { ChevronDown, Settings2 } from "lucide-react";
 import { auth } from "../../../../../../auth";
-import { updateAccount } from "@/backend/action/updateAccount";
+import { updateAccount } from "@/backend/action/user";
 
 export default async function Preference () {
   const session = await auth()

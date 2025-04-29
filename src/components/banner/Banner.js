@@ -3,12 +3,12 @@ import Image from "next/image";
 import { images } from "@/constants";
 import { useState, useEffect, useRef } from "react";
 
-export default function Banner() {
+export default function Banner({large, small}) {
   // Default banner images for non-medium screens
-  const defaultBannerImages = [ images.bannar ];
+  const defaultBannerImages = large
 
   // Medium screen banner images
-  const mediumBannerImages = [ "/images/bannar.jpg" ];
+  const mediumBannerImages = small
 
   const [current, setCurrent] = useState(0);
   const [isMediumScreen, setIsMediumScreen] = useState(false);

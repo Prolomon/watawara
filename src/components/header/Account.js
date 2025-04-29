@@ -1,12 +1,11 @@
 "use client"
 import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
-import { images } from "@/constants"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { UserRound, ChevronDown, Newspaper, PackageCheck, ChevronUp, User, Users, Settings, MessageCircleQuestion, Map, Ticket } from "lucide-react"
 
-export default function Account({session}) {
+export default function Account({avatar, fullname}) {
     const [account, setAccount] = useState(false)
     const dropdownRef = useRef(null)
     const pathname = usePathname()
@@ -32,10 +31,9 @@ export default function Account({session}) {
         setAccount(false)
     }, [pathname])
 
-    const isLogin = true
     const info = [
         {
-          "href": `/account/${session?.user.fullname.toLowerCase().slice(0, session?.user.fullname.indexOf(" "))}`,
+          "href": `/account/${fullname.toLowerCase().slice(0, fullname.indexOf(" "))}`,
           "text": "Profile",
           "icon": <User size={20} />
         },
@@ -77,14 +75,14 @@ export default function Account({session}) {
       ]
     return (
         <div>
-            {session ? 
+            {fullname ? 
                 <>
-                <Link href={`/account/${session?.user.fullname.toLowerCase().slice(0, session?.user.fullname.indexOf(" "))}`} className="flex gap-2 items-center text-base text-gray-800 font-semibold max-md:hidden">
-                    <Image alt="avatar image" width={40} height={40} priority src={session?.user.avatar ? session?.user.avatar : "/images/avatar.jpg"} className="text-gray-800 aspect-square bg-primary rounded-full inline-flex place-content-center" />
-                    <span className="max-md:hidden capitalize">{session?.user.fullname.toLowerCase().slice(0, session?.user.fullname.indexOf(" "))}</span>
+                <Link href={`/account/${fullname.toLowerCase().slice(0, fullname.indexOf(" "))}`} className="flex gap-2 items-center text-base text-gray-800 font-semibold max-md:hidden">
+                    <Image alt="avatar image" width={40} height={40} priority src={avatar ? avatar : "/images/avatar.jpg"} className="text-gray-800 aspect-square bg-primary rounded-full inline-flex place-content-center" />
+                    <span className="max-md:hidden capitalize">{fullname.toLowerCase().slice(0, fullname.indexOf(" "))}</span>
                 </Link>
                 <div onClick={handleAccount} className="hidden max-md:flex gap-2 items-center text-base text-gray-800 font-semibold">
-                    <Image alt="avatar image" width={40} height={40} priority src={session?.user.avatar ? session?.user.avatar : "/images/avatar.jpg"} className="text-gray-800 aspect-square bg-primary rounded-full inline-flex place-content-center" />
+                    <Image alt="avatar image" width={40} height={40} priority src={avatar ? avatar : "/images/avatar.jpg"} className="text-gray-800 aspect-square bg-primary rounded-full inline-flex place-content-center" />
                     {!account ? <ChevronDown size={16} className="mt-1 -ml-1" /> : <ChevronUp size={16} className="mt-1 -ml-1" />}
                 </div>
                 </> :

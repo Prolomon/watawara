@@ -1,15 +1,22 @@
 "use server";
+import { dbConnect } from "@/backend/server/server";
 import Profile from "./Profile";
 import { images } from "@/constants";
+import { User } from "@/backend/models/user.schema";
+import { auth } from "../../../../../../../auth";
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({  }) {
   // read route params
-  const {profileid} = await params;
+  const session = await auth()
+  await dbConnect()
+  const user = await User.findOne({
+    email: session.user.email,
+  });
 
   return {
     metadataBase: new URL("https://watawara.vercel.app/"),
-    title: profileid,
-    description: profileid,
+    title: user.fullname.toUpperCase(),
+    description: user.fullname.toUpperCase(),
     icons: {
       icon: images.logo,
       shortcut: images.logo,
@@ -21,9 +28,9 @@ export async function generateMetadata({ params }) {
     },
     manifest: "/manifest.json",
     openGraph: {
-      title: profileid,
-      description: profileid,
-      url: `${process.env.WATAWARA_BASE_URL}/${profileid
+      title: user.fullname.toUpperCase(),
+      description: user.fullname.toUpperCase(),
+      url: `${process.env.NEXT_PUBLIC_WATAWARA_BASE_URL}/${user.fullname.toUpperCase()
         ?.toLowerCase()
         .replace(/\s+/g, "-")}`,
       siteName: "Watawara",
@@ -37,7 +44,7 @@ export async function generateMetadata({ params }) {
           url: images.openGraph, // Must be an absolute URL
           width: 1800,
           height: 1600,
-          alt: profileid,
+          alt: user.fullname.toUpperCase(),
         },
       ],
       locale: "en_NG",
@@ -45,14 +52,14 @@ export async function generateMetadata({ params }) {
     },
     twitter: {
       card: "summary_large_image",
-      title: profileid,
-      description: profileid,
-      siteId: profileid,
+      title: user.fullname.toUpperCase(),
+      description: user.fullname.toUpperCase(),
+      siteId: user.fullname.toUpperCase(),
       creator: "Tri3G Innovative Limited",
-      creatorId: profileid,
+      creatorId: user.fullname.toUpperCase(),
       images: {
         url: images.openGraph,
-        alt: profileid,
+        alt: user.fullname.toUpperCase(),
       },
       // app: {
       //   name: "Watawara",

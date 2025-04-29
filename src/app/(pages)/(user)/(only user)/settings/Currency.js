@@ -12,7 +12,7 @@ export default function Currencies ({curCurrency}) {
     }
 
     const currencies = [
-        "Naira", "Rand", "Cedi", "Shilling"
+        "Naira"
     ];
 
     const filteredCurrencies = currencies.filter(country =>

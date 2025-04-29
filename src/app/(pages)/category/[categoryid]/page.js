@@ -1,5 +1,5 @@
 "use server";
-import Product from "@/components/product/Product";
+import Product from "./_product/Product";
 import { dbConnect } from "@/backend/server/server";
 import { images } from "@/constants";
 import { Products } from "@/backend/models/products.schema";
@@ -80,12 +80,12 @@ export default async function Home({ params }) {
     const products = await Products.find({}).lean();
     const p = products.filter(_p => _p.category.toLowerCase() == categoryid?.toLowerCase().replace(/\s+/g, "-"))
     return (
-      <section className="w-11/12 mx-auto object-fit overflow-hidden mb-10">
-        <h1 className="font-bold text-xl capitalize text-gray-800 mb-6 mt-4">
-          {categoryid}
+      <section className="w-full mx-auto object-fit">
+        <h1 className="font-bold text-xl capitalize text-gray-800 mb-3">
+          {categoryid?.replace(/-/g, ' ')}
         </h1>
 
-        {products.length > 0 ? (
+        {products || products.length > 0 ? (
           <div className="w-full flex flex-wrap">
             {p.map((_p) => (
               <Product
@@ -101,7 +101,7 @@ export default async function Home({ params }) {
             ))}
           </div>
         ) : (
-          <p className="text-center text-gray-500">No products found</p>
+          <div className="w-full h-full text-center text-gray-800">No Products found</div>
         )}
 
         {products.length === 20 && (

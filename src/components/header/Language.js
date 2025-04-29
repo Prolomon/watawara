@@ -30,14 +30,6 @@ export default function Language () {
             country: "Nigeria",
             short: "NG"
         },
-        {
-            country: "United States",
-            short: "US"
-        },
-        {
-            country: "France",
-            short: "FR"
-        }
     ];
 
     const currencies = [
@@ -45,25 +37,13 @@ export default function Language () {
             currency: "Naira",
             short: "NGN"
         },
-        {
-            currency: "US Dollar",
-            short: "USD"
-        },
-        {
-            currency: "South Africa Rand",
-            short: "ZAR"
-        }
     ];
 
     const languages = [
         {
             lang: "English",
             short: "en-NG"
-        },  
-        {
-            lang: "French",
-            short: "fr-FR"
-        }
+        },
     ];
 
     return (

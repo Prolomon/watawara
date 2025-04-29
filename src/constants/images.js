@@ -6,14 +6,12 @@ const nigeria = "/images/nigeria.jpg"
 const shoe = "/images/shoe.jpg"
 const bannar = "/images/bannar.png"
 const flutterwave = "/images/flutterwave.png"
-const paystack = "/images/paystack.png"
 const verve = "/images/verve.webp"
 const visa = "/images/visa.webp"
+const afrigo = "/images/afrigo.png";
 const mastercard = "/images/mastercard.webp"
-const discover = "/images/discover.webp"
-const america = "/images/america.webp"
 const user = "/test/user.jpg"
 const coupon = "/test/coupon.jpg"
 const openGraph = "./opengraph.jpg"
 
-export default {logo, long, nigeria, shoe, bannar, appstore, playstore, flutterwave, paystack, verve, visa, mastercard, discover, america, user, coupon, openGraph}
+export default {logo, long, nigeria, shoe, bannar, appstore, playstore, flutterwave, afrigo, verve, visa, mastercard, user, coupon, openGraph}

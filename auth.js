@@ -1,17 +1,15 @@
 import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
-// import Facebook from "next-auth/providers/facebook"
 import { User } from "@/backend/models/user.schema";
 import { compare } from "bcryptjs";
 import { dbConnect } from "@/backend/server/server";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  trustHost: true, // 🔥 Quick fix for development (not recommended for production)
-  // OR specify trusted hosts:
+  trustHost: true,
   trustedOrigins: [
     "http://localhost:3000",
-    "https://your-production-domain.com",
+    "https://watawara.vercel.app",
   ],
   providers: [
     Credentials({
@@ -26,7 +24,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const password = credentials?.password;
 
           if (!email || !password) {
-            throw new Error("Email and password are required");
+            throw new CredentialsSignin("Email and password are required");
           }
 
           await dbConnect();
@@ -38,12 +36,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             .exec();
 
           if (!userWithPassword || !userWithPassword.password) {
-            throw new Error("Invalid credentials");
+            throw new CredentialsSignin("Invalid credentials");
           }
 
           const isMatch = await compare(password, userWithPassword.password);
           if (!isMatch) {
-            throw new Error("Invalid credentials");
+            throw new CredentialsSignin("Invalid credentials");
           }
 
           // Return user object without password
@@ -52,15 +50,34 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             .lean()
             .exec();
 
-          return user;
+          // Add status checks here
+          if (!user) {
+             throw new CredentialsSignin("User not found after verification.");
+          }
+
+          if (user.status === "inactive") {
+            throw new CredentialsSignin("Account inactive"); // Throw error for inactive status
+          }
+
+          if (user.status === "ban") {
+            throw new CredentialsSignin("Account banned"); // Throw error for banned status
+          }
+          // End of status checks
+
+          return user; // Return user only if active and not banned
         } catch (error) {
-          console.error("Authentication error:", error);
-          return null; // Return null if authentication fails
+          // If the error is already a CredentialsSignin, rethrow it directly
+          if (error instanceof CredentialsSignin) {
+            throw error;
+          }
+          // Otherwise, wrap other errors
+          console.error("Authorization Error:", error); // Log unexpected errors
+          throw new CredentialsSignin("An authentication error occurred.");
+          // Note: The 'return null' after throw is unreachable and can be removed.
         }
       },
     }),
     Google,
-    // Facebook
   ],
   pages: {
     signIn: "/auth/login",
@@ -149,40 +166,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           throw new Error("Error fetching additional user data:", error);
         }
       }
-
-      //for facebook
-      // if (account?.provider === "facebook") {
-      //   try {
-      //     const { email, name, picture, id, gender } = user;
-
-      //     // Fetch additional user data (e.g., phone number) using Facebook Graph API
-      //     const accessToken = account.access_token;
-      //     const response = await fetch(
-      //       `https://graph.facebook.com/v12.0/me?fields=email,name,picture,gender,phone,birthday&access_token=${accessToken}`
-      //     );
-      //     const facebookData = await response.json();
-
-      //     await dbConnect();
-
-      //     const alreadyUser = await User.findOne({ email }).lean().exec();
-
-      //     if (!alreadyUser) {
-      //       await User.create({
-      //         email,
-      //         fullname: name,
-      //         avatar: facebookData.picture.data.url,
-      //         gender: facebookData.gender, // Save gender
-      //         phone: facebookData.phone, // Save phone number
-      //         dob: facebookData.birthday,
-      //         authProviderId: id,
-      //       });
-      //     }
-
-      //     return true; // Return existing user
-      //   } catch (error) {
-      //     throw new Error("Error checking user registration:", error);
-      //   }
-      // }
       return true; // Return existing user
     },
   },

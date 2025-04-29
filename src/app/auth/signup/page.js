@@ -2,7 +2,7 @@ import Image from "next/image"
 import {images} from "@/constants"
 import Link from "next/link"
 import Password from "@/utilities/password/Password"
-import { createAccount } from "@/backend/action/create-account"
+import { createAccount } from "@/backend/action/user"
 import Select from "@/utilities/select/Select"
 import Input from "@/utilities/input/Input"
 

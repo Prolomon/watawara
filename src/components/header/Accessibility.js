@@ -10,7 +10,7 @@ import { User } from "@/backend/models/user.schema";
 export default async function Accessibility({ quantity }) {
   const session = await auth();
 
-  const user = await User.findOne({ email: session.user.email });
+  const user = await User.findOne({ email: session?.user?.email });
 
   return (
     <div className="w-auto flex items-center gap-3 h-auto relative">
@@ -19,9 +19,9 @@ export default async function Accessibility({ quantity }) {
         <>
           {/* shopping cart */}
           <Cart
-            carts={user.cart.length}
-            orders={user.orders.length}
-            wishlists={user.wishlist.length}
+            carts={user?.cart.length}
+            orders={user?.orders.length}
+            wishlists={user?.wishlist.length}
           />
           <Link
             href="/wallet"
@@ -34,7 +34,7 @@ export default async function Accessibility({ quantity }) {
       {/* language */}
       <Language />
       {/* customer account */}
-      <Account session={session} />
+      <Account avatar={user.avatar} fullname={user.fullname} />
     </div>
   );
 }

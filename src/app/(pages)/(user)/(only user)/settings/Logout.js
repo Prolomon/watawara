@@ -1,7 +1,6 @@
 "use client";
-import { logout } from "@/backend/action/logout";
+import { logout } from "@/backend/action/user";
 import { DoorOpen} from "lucide-react";
-import { redirect } from "next/navigation";
 
 export default function Logout () {
     return (

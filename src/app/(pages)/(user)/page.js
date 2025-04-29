@@ -2,6 +2,8 @@ import Banner from "@/components/banner/Banner";
 import Discover from "./Discover";
 import { images } from "@/constants";
 import Specials from "./Specials";
+import { dbConnect } from "@/backend/server/server";
+import { Advertisement } from "@/backend/models/advertisement";
 
 // metadata function
 export const metadata = {
@@ -66,10 +68,19 @@ export const metadata = {
 };
 
 export default async function Home() {
+  await dbConnect()
+  const advertisements = await Advertisement.find({})
+  const _a = advertisements.map((a) => ({
+    advertisement: a.advertisement,
+    default: a.default,
+  }));
+
+  const advertisement = _a.find(a => a.default == true)
+
   return (
     <div className="w-full h-full relative bg-white">
-      <Banner />
-      {/* <Specials /> */}
+      <Banner large={advertisement.advertisement.large} small={advertisement.advertisement.small} />
+      <Specials />
       <Discover />
     </div>
   );

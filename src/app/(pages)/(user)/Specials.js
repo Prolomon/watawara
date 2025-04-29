@@ -5,7 +5,10 @@ import { Products } from "@/backend/models/products.schema";
 
 export default async function Specials() {
   await dbConnect();
-  const products = await Products.find({}).lean(); // Use lean() for better performance
+  const products = await Products.aggregate([
+    { $sample: { size: 10 } },
+    { $project: { __v: 0, _id: 0 } }
+  ]);
 
   return (
     <Limited
