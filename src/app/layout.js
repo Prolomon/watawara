@@ -11,7 +11,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      {/* <head>
+      <head>
         <meta name="google-site-verification" content="rjsMuDjdJQfvKJiY4YERD-kqz3OMzO80KgHZ-9sqZr4" />
         <script
           async
@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
             };
           `}
         </script>
-      </head> */}
+      </head>
       <body className={`w-full h-full ${inter.className}`}>
         {children}
       </body>
