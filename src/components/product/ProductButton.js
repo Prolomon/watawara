@@ -14,7 +14,7 @@ export default function ProductButton ({id}) {
     return (
       <button
         type="button"
-        className="p-2.5 rounded-full text-gray-800 bg-primary hover:bg-secondary absolute bottom-12 right-2"
+        className="p-2.5 rounded-full text-gray-800 bg-primary hover:bg-secondary absolute bottom-12 max-md:mt-9 right-2"
         onClick={handleClick}
       >
         <ShoppingCart size="18" />

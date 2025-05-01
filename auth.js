@@ -152,7 +152,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           if (!alreadyUser) {
             await User.create({
               email: user.email,
-              fullname: user.name,
+              fullname: user.name.toLowerCase(),
               avatar: user.picture,
               gender: gender, // Save gender
               phoneNo: phoneNumber, // Save phone number

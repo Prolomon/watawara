@@ -10,19 +10,16 @@ import { dbConnect } from "@/backend/server/server";
 import { User } from "@/backend/models/user.schema";
 import { auth } from "../../../../../../auth";
 import { Products } from "@/backend/models/products.schema";
+import { Orders } from "@/backend/models/order.schema";
 
 export async function generateMetadata({ params }) {
   const { orderid } = await params;
   const session = await auth();
   await dbConnect();
   const user = await User.findOne({ email: session.user.email });
-  // fetch data
-  const ord = user.orders.find((o) => o.orderId === orderid);
+  const ord = await Orders.findOne({ userId: user._id, orderId: orderid });
 
   const product = await Products.findOne({ id: ord.productId });
-
-  // read route params
-
   return {
     metadataBase: new URL(`${process.env.WATAWARA_BASE_URL}`),
     title: product.name,
@@ -91,7 +88,7 @@ export default async function Home({ params }) {
   const user = await User.findOne({ email: session.user.email });
   const { orderid } = await params;
   // fetch data
-  const ord = user.orders.find((o) => o.orderId === orderid);
+  const ord = await Orders.findOne({ userId: user._id, orderId: orderid });
   return (
     <div className="w-full mx-auto h-full relative object-fit overflow-hidden">
       <div className="w-full flex max-md:flex-col gap-3 mt-8">

@@ -101,6 +101,7 @@ export const checkoutNow = async (quantity, id, color, size) => {
   }
   const orderId = nanoid();
   const newOrder = {
+    userId,
     productId: id,
     storeId,
     quantity,
@@ -120,11 +121,7 @@ export const checkoutNow = async (quantity, id, color, size) => {
   };
 
   // Corrected update operation
-  await User.updateOne(
-    { _id: userId },
-    {
-      $push: { orders: newOrder },
-    },
+  await Orders.create( { newOrder },
     { new: true } // Return the updated document (optional)
   );
 

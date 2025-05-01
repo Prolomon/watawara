@@ -1,5 +1,5 @@
 import { images } from "@/constants";
-import Orders from "@/components/order/Orders";
+import AllOrders from "@/components/order/AllOrders";
 import Address from "@/utilities/address/Address";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
@@ -71,7 +71,7 @@ export default async function Home() {
     <div className="w-full h-full relative bg-white p-2 rounded-md border border-gray-300">
       <h1 className="text-xl font-bold text-black mb-3">Your Orders</h1>
       <div className="mx-auto w-full mb-6 flex max-md:flex-col gap-3">
-        <Orders />
+        <AllOrders />
         <div className={`w-2/5 max-md:w-full inline-flex flex-col gap-3`}>
           <Address />
           <Information />

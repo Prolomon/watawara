@@ -1,5 +1,5 @@
 "use client"
-import { cancelOrder } from "@/backend/action/cancelOrder";
+import { cancelOrder } from "@/backend/action/order";
 import { useRouter } from "next/navigation";
 
 export default function TimeBtn ({orderId}) {

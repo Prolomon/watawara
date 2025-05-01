@@ -1,4 +1,4 @@
-import { orderAction } from "@/backend/action/orderAction";
+import { orderAction } from "@/backend/action/order";
 
 export default async function CheckButton () {
     return (

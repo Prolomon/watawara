@@ -14,7 +14,7 @@ export default function Limited({ icon, title, path, option, products }) {
   };
 
   return (
-    <section className="w-11/12 mx-auto mt-5 relative">
+    <section className="w-11/12 max-md:w-full mx-auto mt-5 relative">
       <div className="w-full flex items-center justify-between text-gray-800 font-semibold text-lg my-1.25">
         <div className="flex w-auto gap-2 items-center capitalize">
           {icon}

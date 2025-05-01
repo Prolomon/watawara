@@ -3,6 +3,7 @@ import Product from "./_product/Product";
 import { dbConnect } from "@/backend/server/server";
 import { images } from "@/constants";
 import { Products } from "@/backend/models/products.schema";
+import Sidebar from "./Sidebar";
 
 export async function generateMetadata({ params }) {
   // read route params
@@ -80,41 +81,48 @@ export default async function Home({ params }) {
     const products = await Products.find({}).lean();
     const p = products.filter(_p => _p.category.toLowerCase() == categoryid?.toLowerCase().replace(/\s+/g, "-"))
     return (
-      <section className="w-full mx-auto object-fit">
-        <h1 className="font-bold text-xl capitalize text-gray-800 mb-3">
-          {categoryid?.replace(/-/g, ' ')}
-        </h1>
+      <div className="w-11/12 max-md:w-full mx-auto flex gap-2 my-4">
+        <Sidebar />
+        <div className="w-9/12 max-md:w-full">
+          <section className="w-full mx-auto object-fit">
+            <h1 className="font-bold text-xl capitalize text-gray-800 mb-3">
+              {categoryid?.replace(/-/g, " ")}
+            </h1>
 
-        {products || products.length > 0 ? (
-          <div className="w-full flex flex-wrap">
-            {p.map((_p) => (
-              <Product
-                key={_p.id}
-                images={_p.images}
-                name={_p.name}
-                price={_p.price}
-                reviews={_p.reviews}
-                brand={_p.brand}
-                category={_p.category}
-                id={_p.id}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="w-full h-full text-center text-gray-800">No Products found</div>
-        )}
+            {products || products.length > 0 ? (
+              <div className="w-full flex flex-wrap">
+                {p.map((_p) => (
+                  <Product
+                    key={_p.id}
+                    images={_p.images}
+                    name={_p.name}
+                    price={_p.price}
+                    reviews={_p.reviews}
+                    brand={_p.brand}
+                    category={_p.category}
+                    id={_p.id}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="w-full h-full text-center text-gray-800">
+                No Products found
+              </div>
+            )}
 
-        {products.length === 20 && (
-          <div className="grid place-content-center">
-            <button
-              type="button"
-              className="mx-auto text-gray-600 text-base mt-6"
-            >
-              Load More
-            </button>
-          </div>
-        )}
-      </section>
+            {products.length === 20 && (
+              <div className="grid place-content-center">
+                <button
+                  type="button"
+                  className="mx-auto text-gray-600 text-base mt-6"
+                >
+                  Load More
+                </button>
+              </div>
+            )}
+          </section>
+        </div>
+      </div>
     );
   } catch (e) {
     console.log(e);

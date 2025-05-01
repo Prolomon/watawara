@@ -1,18 +1,44 @@
 "use server";
 import { dbConnect } from "@/backend/server/server";
 import { auth } from "../../../auth";
-import { User } from "../models/user.schema";
+import { Orders } from "../models/order.schema";
 import { redirect } from "next/navigation";
+import { User } from "../models/user.schema";
 // import { generateOrderId } from "../generateOrderId";
 import { Products } from "../models/products.schema";
 import { cookies } from "next/headers";
 import { nanoid } from "nanoid";
 
+export const cancelOrder = async (orderId) => {
+  const session = await auth();
+  const userId = session?.user?._id;
+
+  await dbConnect();
+
+  // Update the specific order's status
+  const result = await Orders.updateOne(
+    {
+      userId,
+      orderId,
+    },
+    {
+      $set: { "orders.$.status": "cancelled" },
+    }
+  );
+
+  if (result.modifiedCount === 0) {
+    throw new Error("Failed to cancel order or order not found");
+  }
+
+  // Redirect to orders page with success state
+  redirect(`/cart/orders`);
+};
+
 export const orderAction = async () => {
   const session = await auth();
   const userId = session?.user?._id;
-  const stored = (await cookies()).get("wata_delivery").value || 0;
-  const delivery = (await cookies()).get("wata_delivery_type").value || 0;
+  const stored = (await cookies()).get("wata_delivery")?.value || 0;
+  const delivery = (await cookies()).get("wata_delivery_type")?.value || 0;
 
   if (!session || !userId) {
     redirect("/auth/login");
@@ -65,6 +91,7 @@ export const orderAction = async () => {
   const productData = checkoutProductDetails.reduce(
     (acc, { id: productId, quantity, color, size, storeId }) => {
       acc.push({
+        userId,
         productId,
         storeId,
         quantity,
@@ -88,17 +115,15 @@ export const orderAction = async () => {
   );
 
   if (user?.checkout?.products?.length > 0) {
-    await User.updateOne(
-      { _id: userId },
-      {
-        $push: {
-          orders: { $each: productData },
-        },
-        $set: { checkout: [] },
-      },
-      { new: true } // Return the updated document (optional)
-    );
+    // Create multiple orders using insertMany
+    await Orders.insertMany(productData);
+    
+    // Clear the user's checkout
+    await User.findByIdAndUpdate(userId, { checkout: [] });
+    
     redirect(`/cart/orders`);
   }
   redirect(`/`);
 };
+
+

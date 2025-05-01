@@ -90,7 +90,7 @@ export default function SearchFilter({ setOpen }) {
       <div className="flex justify-between items-center gap-2 rounded-full text-gray-800">
         <h3 className="text-xl font-semibold">Filters</h3>
         <button onClick={handleClick} className="p-1 hover:border rounded-sm hover:border-gray-800">
-          <X size={20} className="text-gray-800 hidden max-md:hidden" />
+          <X size={20} className="text-gray-800 hidden max-md:block" />
         </button>
       </div>
       <div className="mt-4">

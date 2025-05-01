@@ -29,22 +29,22 @@ export default function LimitedCard({
           width="100"
           height="100"
           className="rounded-lg w-full aspect-square"
-          src={images[1]}
+          src={images[1] || "/images/default.png"}
         />
         <div className="w-full mt-1">
-          <h4 className="text-base font-semibold text-gray-600 line-clamp-1">
+          <h4 className="text-base max-md:text-sm font-semibold text-gray-600 line-clamp-1">
             {name}
           </h4>
-          <div className="w-full flex items-center justify-between relative -top-1">
+          <div className="w-full flex items-center justify-between relative">
             <div>
-              <h3 className="text-lg font-bold text-black">
+              <h3 className="text-lg max-md:text-base font-bold text-black">
                 {discount.type === "percentage"
                   ? Currency(((100 - discount.amount) * price) / 100)
                   : discount.type === "none"
                   ? Currency(price)
                   : Currency(price - discount.amount)}
               </h3>
-              <h5 className="line-through text-gray-400 font-semi-bold -mt-1">
+              <h5 className="line-through text-gray-400 text-base max-md:text-sm -mt-1">
                 {Currency(price)}
               </h5>
             </div>

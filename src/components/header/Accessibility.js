@@ -6,11 +6,13 @@ import Cart from "./Cart";
 import Language from "./Language";
 import { auth } from "../../../auth";
 import { User } from "@/backend/models/user.schema";
+import { Orders } from "@/backend/models/order.schema";
 
 export default async function Accessibility({ quantity }) {
   const session = await auth();
 
   const user = await User.findOne({ email: session?.user?.email });
+  const orders = await Orders.find({ userId: user._id });
 
   return (
     <div className="w-auto flex items-center gap-3 h-auto relative">
@@ -20,7 +22,7 @@ export default async function Accessibility({ quantity }) {
           {/* shopping cart */}
           <Cart
             carts={user?.cart.length}
-            orders={user?.orders.length}
+            orders={orders.length}
             wishlists={user?.wishlist.length}
           />
           <Link

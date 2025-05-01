@@ -5,10 +5,13 @@ import { Products } from "@/backend/models/products.schema";
 
 export default async function Specials() {
   await dbConnect();
-  const products = await Products.aggregate([
+  const productsData = await Products.aggregate([
     { $sample: { size: 10 } },
-    { $project: { __v: 0, _id: 0 } }
+    { $project: { __v: 0, _id: 0 } } // Keep your projection
   ]);
+
+  // Convert the potentially complex Mongoose aggregation result to plain objects
+  const plainProducts = JSON.parse(JSON.stringify(productsData));
 
   return (
     <Limited
@@ -16,7 +19,7 @@ export default async function Specials() {
       title="limited offer"
       path="/category/limited"
       option="70% off"
-      products={products}
+      products={plainProducts} // Pass the plain objects
     />
   );
 }

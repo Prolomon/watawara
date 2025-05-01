@@ -106,10 +106,10 @@ export function LoginForm () {
 
 
   return (
-    <div className="w-[22rem] max-md:w-full mx-auto h-full grid place-content-center bg-white">
-      <Image priority width={100} height={100} alt="Watawara official logo" src={images.logo} className="aspect-square w-28 h-auto mx-auto" />
-      <h2 className="text-2xl font-semibold text-gray-800 text-center">Welcome Back!</h2>
-      <h5 className="text-base text-gray-600 text-center">Unlock exclusive deals and offers - Sign in to your Watawara account!</h5>
+    <div className="w-1/2 px-4 py-8 max-md:p-0 max-md:w-full mx-auto h-full grid place-content-center bg-white">
+      <Image priority width={100} height={100} alt="Watawara official logo" src={images.logo} className="aspect-square w-28 h-auto mx-auto hidden max-md:block" />
+      <h2 className="text-2xl font-semibold text-gray-800 max-md:text-center">Welcome Back!</h2>
+      <h5 className="text-base text-gray-600 max-md:text-center">Unlock exclusive deals and offers - Sign in to your Watawara account!</h5>
 
       {/* Display error message */}
       {error && (

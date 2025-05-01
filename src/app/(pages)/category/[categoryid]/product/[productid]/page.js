@@ -107,7 +107,7 @@ export default async function Home({ params }) {
     const rating = rate / product.reviews.length / 5;
 
     return (
-      <div className="w-11/12 mx-auto h-full relative object-fit overflow-hidden mt-4 mb-10">
+      <div className="w-11/12 max-md:w-full mx-auto h-full relative object-fit overflow-hidden mt-4 mb-10">
         <div className="w-full flex max-md:flex-col gap-3">
           <div className="w-9/12 max-md:w-full max-md:mb-3">
             {/* product gallery and product details */}

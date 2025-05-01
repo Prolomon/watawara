@@ -15,17 +15,14 @@ export default function Product({
   price,
   brand,
   category,
-  reviews
+  reviews,
 }) {
   const search = useSearchParams();
   const [showPopover, setShowPopover] = useState(false);
 
-  const rate = reviews.reduce(
-      (acc, r) =>
-        acc + Number(r.rating),
-      0
-    );
-  const rating = rate / reviews.length / 5
+  const rating = reviews.length
+    ? reviews.reduce((acc, r) => acc + Number(r.rating), 0) / reviews.length / 5
+    : 0;
 
   useEffect(() => {
     if (search.get("cart") === id) {
@@ -56,19 +53,20 @@ export default function Product({
             priority
             fill
             alt={name || "Product image"}
-            src={images[0]}
+            src={images[0] || "/images/default.png"}
             className="object-cover w-full h-full"
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 20vw"
           />
         </div>
 
-        <h4 className="text-gray-600 font-semibold mt-2 text-base line-clamp-1">
+        <h4 className="text-gray-600 font-semibold mt-2 text-base max-md:text-sm line-clamp-1">
           {name}
         </h4>
-
         <div className="mt-1">
-          <h3 className="font-bold text-lg text-black">{Currency(price)}</h3>
-          <h6 className="text-sm inline-block relative -top-1">
+          <h3 className="font-bold max-md:text-base text-lg text-black">
+            {Currency(price)}
+          </h3>
+          <h6 className="text-[12px] inline-block relative -top-1">
             <span className="font-semibold text-green-700">{brand}</span>
           </h6>
           <div className="flex gap-1 items-center text-sm">

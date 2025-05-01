@@ -7,9 +7,5 @@ export default async function RootLayout({ children }) {
   if (!session) {
     redirect("/auth/login");
   }
-  return (
-    <div className="w-11/12 mx-auto my-6">
-      {children}
-    </div>
-  );
+  return <div className="w-11/12 max-md:w-full mx-auto my-6">{children}</div>;
 }

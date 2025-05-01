@@ -50,7 +50,7 @@ export default async function Checkout() {
   const tax = (subTotal * 0.075).toFixed(2); // Assuming a tax rate of 7.5%
   const shipping = 0; // Assuming free shipping for now
 
-  const total = subTotal + Number(tax) + shipping + Number(stored.value);
+  const total = subTotal + Number(tax) + shipping;
   const express = 2500
 
   return (
