@@ -22,6 +22,8 @@
   "permissions": [
     "notifications",
     "geolocation",
-    "camera"
+    "camera",
+    "microphone",
+    "push"
   ]
 }

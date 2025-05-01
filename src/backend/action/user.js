@@ -1,41 +1,14 @@
 "use server";
 import { signIn, signOut } from "../../../auth";
-import { AuthError } from "next-auth"; 
-import { redirect } from "next/navigation"; 
+import { AuthError } from "next-auth";
+import { redirect } from "next/navigation";
 import { auth } from "../../../auth";
 import { User } from "../models/user.schema";
 import { NextResponse } from "next/server";
 import { dbConnect } from "../server/server";
 import { put } from "@vercel/blob";
 import { hash } from "bcryptjs";
-
-const sendEmail = async (userEmail, userOtp, userType) => {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_WATAWARA_BASE_URL || "http://localhost:3000";
-  const response = await fetch(`${baseUrl}/api/mailer`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: userEmail,
-      otp: userOtp,
-      type: userType
-    }),
-  });
-
-  if (!response.ok) {
-    console.error(`Email API request failed with status: ${response.status}`);
-    const errorBody = await response
-      .text()
-      .catch(() => "Could not read error body");
-    console.error("Email API error body:", errorBody);
-    throw new Error(`Email API request failed: ${response.statusText}`);
-  }
-  const data = await response.json();
-  console.log("Email API response data:", data);
-  return data;
-};
+import { Mailer } from "../mailer";
 
 const generateOtp = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -56,18 +29,17 @@ export async function login(formData) {
     });
 
     return { success: true };
-
   } catch (error) {
     // Catch specific NextAuth errors
     if (error instanceof AuthError) {
       switch (error.type) {
-        case 'CredentialsSignin':
+        case "CredentialsSignin":
           // error.message should contain the specific message from authorize
-          return { error: error.message || 'Invalid email or password.' };
+          return { error: error.message || "Invalid email or password." };
         // Add cases for other AuthError types if needed
         default:
           console.error("Auth Error:", error);
-          return { error: 'An authentication error occurred.' };
+          return { error: "An authentication error occurred." };
       }
     } else {
       // Handle non-AuthError errors
@@ -84,9 +56,7 @@ export const logout = async () => {
 };
 
 export const updateAccount = async (formData) => {
-  
   try {
-
     await dbConnect();
 
     // Get user session?
@@ -101,12 +71,15 @@ export const updateAccount = async (formData) => {
     let avatarUrl = null; // Initialize avatarUrl
 
     if (avatarFile instanceof File && avatarFile.size > 0) {
-      const blob = await put(`customers/avatars/${email}-${avatarFile.name}`, avatarFile, {
-        access: "public", 
-      });
+      const blob = await put(
+        `customers/avatars/${email}-${avatarFile.name}`,
+        avatarFile,
+        {
+          access: "public",
+        }
+      );
       avatarUrl = blob.url;
     }
-
 
     const data = {
       avatar: avatarUrl,
@@ -118,7 +91,7 @@ export const updateAccount = async (formData) => {
     };
 
     const result = await User.updateOne(
-      {email},
+      { email },
       { ...data },
       {
         new: true,
@@ -145,25 +118,24 @@ export const updateAccount = async (formData) => {
 };
 
 export async function resetPassword(formData) {
-  await dbConnect()
+  await dbConnect();
   const otp = formData.get("otp"),
     password = formData.get("password"),
-    email = formData.get("email")
-  const user = await User.findOne({ email })
-  console.log(user, user.otp == otp)
+    email = formData.get("email");
+  const user = await User.findOne({ email });
+  console.log(user, user.otp == otp);
   if (user.otp != otp) {
-    redirect("/auth/forgotten-password/reset?status=Invalid OTP code provided&email=" + email)
-
-  };
+    redirect(
+      "/auth/forgotten-password/reset?status=Invalid OTP code provided&email=" +
+        email
+    );
+  }
   const saltRounds = 12;
   const hashPassword = await hash(password, saltRounds);
   await User.updateOne({ email }, { password: hashPassword });
   await User.updateOne({ email }, { otp: null });
-  try {
-    await sendEmail(email, user.otp, "reset");
-  } catch (emailError) {
-    console.error("Failed to send welcome email:", emailError);
-  }
+  
+  await Mailer(email, "reset");
 
   redirect("/auth/login");
 }
@@ -173,37 +145,37 @@ export async function forgottenPassword(e) {
   const email = e.get("email");
   const user = await User.findOne({ email });
 
-  if(!user) redirect("/auth/forgotten-password?message=eEmail does not exist in database");
+  if (!user)
+    redirect(
+      "/auth/forgotten-password?message=eEmail does not exist in database"
+    );
 
   const otp = generateOtp();
   const result = await User.updateOne({ email }, { otp });
 
-  try {
-    await sendEmail(email, otp, "otp");
-    console.log("Welcome email initiated for:", email);
-  } catch (emailError) {
-    console.error("Failed to send welcome email:", emailError);
-  }
+  await Mailer(email, "otp");
 
-  redirect("/auth/forgotten-password/reset?authCode=werygre37er327r323rhr3hr237r32gqr7g23rg3yeg3ryg73748rdndnwirurr&email=" + email);
+  redirect(
+    "/auth/forgotten-password/reset?authCode=werygre37er327r323rhr3hr237r32gqr7g23rg3yeg3ryg73748rdndnwirurr&email=" +
+      email
+  );
 }
 
 export async function deleteAccount(formData) {
-    const session = await auth();
-    const email = formData.get("email");
+  const session = await auth();
+  const email = formData.get("email");
 
-    const curUser = await User.findOne({ email });
+  const curUser = await User.findOne({ email });
 
-    if (!email || !curUser || session.user.email !== curUser) {
-      redirect("/settings?validate=failed");
-    }
+  if (!email || !curUser || session.user.email !== curUser) {
+    redirect("/settings?validate=failed");
+  }
 
-    await User.findOneAndDelete({ email: session.user.email  })
+  await User.findOneAndDelete({ email: session.user.email });
 
-    await signOut({ redirect: false });
+  await signOut({ redirect: false });
 
-    redirect("/");
-
+  redirect("/");
 }
 
 export const createAccount = async (formData) => {
@@ -232,17 +204,12 @@ export const createAccount = async (formData) => {
     gender,
     password: hashPassword,
     otp: generateOtp(),
-    status: "inactive"
+    status: "inactive",
   });
 
-  if (!newUser) redirect("/auth/signup?message=user-creation-error")
+  if (!newUser) redirect("/auth/signup?message=user-creation-error");
 
-  try {
-    await sendEmail(email, newUser.otp, "welcome");
-    console.log("Welcome email initiated for:", email);
-  } catch (emailError) {
-    console.error("Failed to send welcome email:", emailError);
-  }
+  await Mailer(email, "welcome");
 
   redirect("/auth/otp?email=" + email);
 };
@@ -252,8 +219,7 @@ export const userOtp = async (formData) => {
   const otp = formData.get("otp");
   await dbConnect();
 
-  if (!otp)
-    redirect("/auth/login?message=all-fields-required");
+  if (!otp) redirect("/auth/login?message=all-fields-required");
 
   // Check if user already exists
   const user = await User.findOne({ email });
@@ -262,7 +228,7 @@ export const userOtp = async (formData) => {
 
   if (user.otp != otp) redirect(`/auth/otp?email=${email}&message=invalid-otp`);
 
-  await User.updateOne({ email }, { status: "active", otp: null })
+  await User.updateOne({ email }, { status: "active", otp: null });
 
   redirect("/auth/login");
 };

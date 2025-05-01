@@ -76,16 +76,16 @@ export default async function Home({searchParams}) {
               Create One
             </Link>
           </p>
-          <p className="text-sm text-gray-800 text-center mt-2">
+          <div className="text-sm text-gray-800 text-center mt-2">
             By continuing you have agreed to our{" "}
-            <Link href="/auth/login" className="hover:underline">
+            <p href="/auth/login" className="hover:underline">
               Privacy Policy
-            </Link>{" "}
+            </p>{" "}
             and our{" "}
-            <Link href="/auth/login" className="hover:underline">
+            <p href="/auth/login" className="hover:underline">
               Terms and Condition
-            </Link>
-          </p>
+            </p>
+          </div>
         </div>
       </div>
     </main>

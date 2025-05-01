@@ -58,19 +58,19 @@ export default async function Home({ searchParams }) {
               value="Verify OTP"
             />
           </form>
-          <p className="text-sm text-gray-500 text-center my-2">
+          <div className="text-sm text-gray-500 text-center my-2">
             By verifying, you have agreed to out{" "}
-            <Link href="/wata/privacy-policy" className=" hover:underline">
+            <p href="/wata/privacy-policy" className=" hover:underline">
               Privacy Policy
-            </Link>{" "}
+            </p>{" "}
             and{" "}
-            <Link
+            <p
               href="/wata/terms-and-conditions"
               className=" hover:underline"
             >
               Terms and conditions
-            </Link>
-          </p>
+            </p>
+          </div>
           <br />
           <br />
         </div>
