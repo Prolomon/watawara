@@ -1,126 +1,204 @@
-// import Image from "next/image"
-import { images } from "@/constants";
-import { User } from "@/backend/models/user.schema";
 import { dbConnect } from "@/backend/server/server";
-import { v4 as uuidv4 } from "uuid";
+import { User } from "@/backend/models/user.schema";
 
-export async function Otp ({ email }) {
+const brandColor = "#f59e0b"; // Watawara brand color
+
+const containerStyle = {
+  fontFamily:
+    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+  padding: "20px",
+  backgroundColor: "#f4f4f4", // Light grey background
+};
+
+const cardStyle = {
+  backgroundColor: "#ffffff", // White card background
+  border: "1px solid #e0e0e0",
+  borderRadius: "8px",
+  padding: "30px",
+  maxWidth: "600px",
+  margin: "20px auto",
+  textAlign: "center",
+  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+};
+
+const logoContainerStyle = {
+  marginBottom: "25px",
+  // Add height/width constraints if your logo needs them
+};
+
+const logoStyle = {
+  maxWidth: "150px", // Adjust max-width as needed
+  height: "auto",
+};
+
+const headingStyle = {
+  fontSize: "26px",
+  fontWeight: "bold",
+  color: "#333333", // Dark grey heading
+  marginBottom: "15px",
+};
+
+const subHeadingStyle = {
+  fontSize: "18px",
+  color: brandColor, // Use brand color for sub-heading
+  marginBottom: "25px",
+};
+
+const textStyle = {
+  fontSize: "16px",
+  color: "#555555", // Medium grey text
+  lineHeight: "1.6",
+  marginBottom: "15px",
+  textAlign: "left", // Align text left for readability
+};
+
+const otpContainerStyle = {
+  margin: "30px 0",
+};
+
+const otpLabelStyle = {
+  fontSize: "14px",
+  color: "#777777",
+  marginBottom: "5px",
+};
+
+const otpStyle = {
+  fontSize: "32px",
+  fontWeight: "bold",
+  color: brandColor, // Use brand color for OTP
+  letterSpacing: "5px",
+  margin: "5px 0 20px 0",
+  padding: "12px 20px",
+  border: `2px solid ${brandColor}`, // Use brand color for border
+  borderRadius: "6px",
+  display: "inline-block",
+  backgroundColor: "#fef9c3", // Light yellow background for OTP
+};
+
+// Updated Footer Styles
+const footerStyle = {
+  marginTop: "40px",
+  paddingTop: "20px",
+  borderTop: "1px solid #eeeeee",
+  fontSize: "12px",
+  color: "#888888",
+  textAlign: "center",
+  lineHeight: "1.5", // Added line height for better spacing
+};
+
+const footerLinkStyle = {
+  color: "#555555", // Slightly darker link color
+  textDecoration: "underline",
+  margin: "0 5px", // Add some horizontal spacing between links
+};
+
+const mottoStyle = {
+  fontSize: "13px",
+  fontStyle: "italic",
+  color: "#777777",
+  marginTop: "10px",
+};
+
+const copyrightStyle = {
+  marginTop: "15px",
+};
+
+export async function Otp({
+  // Note: Changed to named export
+  email,
+  logoUrl = "https://gonf7za2h5pl262h.public.blob.vercel-storage.com/archive/long-o33wF29ES14EXO9L1weotcHCURRykJ.png",
+  websiteUrl = process.env.WATAWARA_BASE_URL,
+  privacyUrl = "#",
+  helpUrl = "#",
+  unsubscribeUrl = "#",
+}) {
   await dbConnect();
   const user = await User.findOne({ email });
+
   return (
-    <html>
-      <body
-        style={{
-          backgroundColor: "#ffffff",
-          fontFamily: "Arial, sans-serif",
-          margin: "0",
-          padding: "40px 20px",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: "600px",
-            margin: "0 auto",
-            backgroundColor: "#ffffff",
-            borderRadius: "8px",
-            border: "1px solid #e5e7eb",
-            padding: "32px",
-          }}
-        >
-          <div style={{ textAlign: "center", marginBottom: "32px" }}>
-            <img
-              src={images.logo}
-              alt="logo"
-              width={120}
-              height={40}
-              style={{ margin: "0 auto" }}
-            />
-          </div>
+    <div style={containerStyle}>
+      <div style={cardStyle}>
+        {/* Logo Placeholder */}
+        <div style={logoContainerStyle}>
+          <img src={logoUrl} alt="Watawara Logo" style={logoStyle} />
+        </div>
 
-          <h1
-            style={{
-              color: "#111827",
-              fontSize: "24px",
-              fontWeight: "600",
-              marginBottom: "24px",
-              textAlign: "center",
-            }}
-          >
-            Password Reset Request
-          </h1>
+        <h1 style={headingStyle}>Reset Your Watawara Password</h1>
+        <h2 style={subHeadingStyle}>
+          Hi {user.fullname}, let&apos;s secure your account.
+        </h2>
 
-          <div
-            style={{
-              color: "#4B5563",
-              fontSize: "16px",
-              lineHeight: "24px",
-              marginBottom: "24px",
-            }}
-          >
-            <p>Hello {user.fullname},</p>
-            <p>
-              We received a request to reset your password for your Watawara
-              account. Here is your one-time password (OTP) to complete the
-              password reset process:
-            </p>
+        <p style={textStyle}>
+          We received a request to reset the password for your Watawara account.
+        </p>
+        <p style={textStyle}>
+          Please use the One-Time Password (OTP) below to proceed with setting a
+          new password.
+        </p>
 
-            <div
-              style={{
-                backgroundColor: "#F3F4F6",
-                padding: "16px",
-                borderRadius: "6px",
-                marginTop: "24px",
-                textAlign: "center",
-              }}
+        {/* OTP Section */}
+        <div style={otpContainerStyle}>
+          <div style={otpLabelStyle}>Your Password Reset Code:</div>
+          <div style={otpStyle}>{user.otp}</div>
+        </div>
+
+        <p style={textStyle}>
+          Enter this code on the password reset page. This code is valid for a
+          limited time.
+        </p>
+        <p style={textStyle}>
+          If you did not request a password reset, please ignore this email or
+          contact our support if you have concerns. Your account remains secure.
+        </p>
+
+        {/* Footer (Reused) */}
+        <div style={footerStyle}>
+          <div>
+            <a
+              href={websiteUrl}
+              style={footerLinkStyle}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <p
-                style={{
-                  fontWeight: "700",
-                  fontSize: "32px",
-                  letterSpacing: "8px",
-                  margin: "12px 0",
-                }}
-              >
-                {user.otp}
-              </p>
-              <p style={{ fontSize: "14px", color: "#6B7280" }}>
-                This OTP will expire in 10 minutes
-              </p>
-            </div>
-            <p>
-              To continue this, visit{" "}
-              <a href="${process.env.WATAWARA_BASE_URL}/auth/forgotten-password/reset?authCode=${uuidv4}&email=${email}">
-                Watawara password reset
-              </a>
-            </p>
-            <p style={{ marginTop: "24px" }}>
-              If you didn&apos;t request this password reset, please ignore this
-              email or contact our support team if you believe this is a
-              mistake.
-            </p>
+              Visit Watawara
+            </a>{" "}
+            |
+            <a
+              href={privacyUrl}
+              style={footerLinkStyle}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Privacy Policy
+            </a>{" "}
+            |
+            <a
+              href={helpUrl}
+              style={footerLinkStyle}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Help Center
+            </a>{" "}
+            |
+            <a
+              href={unsubscribeUrl}
+              style={footerLinkStyle}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Unsubscribe
+            </a>
           </div>
-
-          <div
-            style={{
-              borderTop: "1px solid #e5e7eb",
-              paddingTop: "24px",
-              marginTop: "32px",
-              textAlign: "center",
-              color: "#6B7280",
-              fontSize: "14px",
-            }}
-          >
-            <p>
-              For security reasons, this OTP will expire in 10 minutes. If you
-              need a new OTP, please request another password reset.
-            </p>
-            <p style={{ marginTop: "12px" }}>
-              Need help? Contact our support team
-            </p>
-            <a href="mailto:taiwooyetade67@gmail.com">taiwooyetade@gmail.com</a>
+          <div style={mottoStyle}>
+            &apos;What you order is what you get!!!&apos;
+          </div>
+          <div style={copyrightStyle}>
+            &copy; {new Date().getFullYear()} Watawara. All rights reserved.{" "}
+            <br />
           </div>
         </div>
-      </body>
-    </html>
+      </div>
+    </div>
   );
 }

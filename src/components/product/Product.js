@@ -45,7 +45,7 @@ export default function Product({
 
       <Link
         href={`/category/${categorySlug}/product/${productSlug}`}
-        className="w-full relative block"
+        className="w-full h-24"
         aria-label={`View ${name} details`}
       >
         <div className="relative w-full aspect-square rounded-lg overflow-hidden">
@@ -58,23 +58,17 @@ export default function Product({
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 20vw"
           />
         </div>
-
-        <h4 className="text-gray-600 font-semibold mt-2 text-base max-md:text-sm line-clamp-1">
+        <h4 className="text-gray-600 font-semibold mt-1 text-base max-md:text-sm line-clamp-1">
           {name}
         </h4>
-        <div className="mt-1">
-          <h3 className="font-bold max-md:text-base text-lg text-black">
-            {Currency(price)}
-          </h3>
-          <h6 className="text-[12px] inline-block relative -top-1">
-            <span className="font-semibold text-green-700">{brand}</span>
-          </h6>
-          <div className="flex gap-1 items-center text-sm">
-            <div className="relative -left-2 -top-2 flex items-center">
-              <Rating rating={rating} size={18} />
-              <span>({rating})</span>
-            </div>
-          </div>
+        <h3 className="font-bold max-md:text-base text-lg text-black">
+          {Currency(price)}
+        </h3>
+        <h6 className="text-[12px] inline-block relative -top-2">
+          <span className="font-semibold text-green-700">{brand}</span>
+        </h6>
+        <div className="h-auto flex gap-1 items-center text-sm relative -left-2 -top-3 bottom-0 mb-0 pb-0">
+          <Rating rating={rating} size={18} /><span>({rating})</span>
         </div>
       </Link>
 

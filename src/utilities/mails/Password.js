@@ -1,106 +1,170 @@
-// import Image from "next/image"
-import { images } from "@/constants";
 import { User } from "@/backend/models/user.schema";
 import { dbConnect } from "@/backend/server/server";
-import { v4 as uuidv4 } from "uuid";
 
-export async function Password({ email }) {
+const brandColor = '#f59e0b'; // Watawara brand color
+
+const containerStyle = {
+  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+  padding: '20px',
+  backgroundColor: '#f4f4f4',
+};
+
+const cardStyle = {
+  backgroundColor: '#ffffff',
+  border: '1px solid #e0e0e0',
+  borderRadius: '8px',
+  padding: '30px',
+  maxWidth: '600px',
+  margin: '20px auto',
+  textAlign: 'center',
+  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+};
+
+const logoContainerStyle = {
+  marginBottom: '25px',
+};
+
+const logoStyle = {
+  maxWidth: '150px',
+  height: 'auto',
+};
+
+const headingStyle = {
+  fontSize: '26px',
+  fontWeight: 'bold',
+  color: '#333333',
+  marginBottom: '15px',
+};
+
+const subHeadingStyle = {
+  fontSize: '18px',
+  color: '#10B981', // Green color for success confirmation
+  marginBottom: '25px',
+  fontWeight: '600',
+};
+
+const textStyle = {
+  fontSize: '16px',
+  color: '#555555',
+  lineHeight: '1.6',
+  marginBottom: '15px',
+  textAlign: 'left',
+};
+
+const footerStyle = {
+  marginTop: '40px',
+  paddingTop: '20px',
+  borderTop: '1px solid #eeeeee',
+  fontSize: '12px',
+  color: '#888888',
+  textAlign: 'center',
+  lineHeight: '1.5',
+};
+
+const footerLinkStyle = {
+  color: '#555555',
+  textDecoration: 'underline',
+  margin: '0 5px',
+};
+
+const mottoStyle = {
+  fontSize: '13px',
+  fontStyle: 'italic',
+  color: '#777777',
+  marginTop: '10px',
+};
+
+const copyrightStyle = {
+  marginTop: '15px',
+};
+
+export async function Password({
+  // Renamed export for clarity
+  email,
+  logoUrl = "https://gonf7za2h5pl262h.public.blob.vercel-storage.com/archive/long-o33wF29ES14EXO9L1weotcHCURRykJ.png", // Default logo
+  websiteUrl = process.env.WATAWARA_BASE_URL,
+  privacyUrl = "#",
+  helpUrl = "#",
+  supportEmail = "taiwooyetade67@gmail.com", // Default support email
+}) {
   await dbConnect();
   const user = await User.findOne({ email });
+  const fullname = user.fullname || "Watawara User";
+
   return (
-    <html>
-      <body
-        style={{
-          backgroundColor: "#ffffff",
-          fontFamily: "Arial, sans-serif",
-          margin: "0",
-          padding: "40px 20px",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: "600px",
-            margin: "0 auto",
-            backgroundColor: "#ffffff",
-            borderRadius: "8px",
-            border: "1px solid #e5e7eb",
-            padding: "32px",
-          }}
-        >
-          <div style={{ textAlign: "center", marginBottom: "32px" }}>
-            <img
-              src={images.logo}
-              alt="logo"
-              width={120}
-              height={40}
-              style={{ margin: "0 auto" }}
-            />
-          </div>
+    <div style={containerStyle}>
+      <div style={cardStyle}>
+        {/* Logo */}
+        <div style={logoContainerStyle}>
+          <img src={logoUrl} alt="Watawara Logo" style={logoStyle} />
+        </div>
 
-          <h1
-            style={{
-              color: "#111827",
-              fontSize: "24px",
-              fontWeight: "600",
-              marginBottom: "24px",
-              textAlign: "center",
-            }}
-          >
-            Password Reset Successful
-          </h1>
+        <h1 style={headingStyle}>Password Successfully Reset</h1>
+        <h2 style={subHeadingStyle}>Your Watawara account is updated.</h2>
 
-          <div
-            style={{
-              color: "#4B5563",
-              fontSize: "16px",
-              lineHeight: "24px",
-              marginBottom: "24px",
-            }}
-          >
-            <p>Hello {user.fullname},</p>
-            <p>
-              Your password has been successfully reset for your Watawara account. You can now log in with your new password.
-            </p>
+        {/* Main Content */}
+        <p style={textStyle}>Hello {fullname},</p>
+        <p style={textStyle}>
+          This email confirms that the password for your Watawara account
+          associated with {email} has been successfully changed.
+        </p>
+        <p style={textStyle}>
+          You can now log in using your new password. For security reasons, we
+          don&apos;t include passwords in emails.
+        </p>
+        <p style={textStyle}>
+          If you did <strong>not</strong> make this change, please contact our
+          support team immediately at{" "}
+          <a href={`mailto:${supportEmail}`} style={footerLinkStyle}>
+            {supportEmail}
+          </a>{" "}
+          or visit our Help Center, as your account security may be compromised.
+        </p>
 
-            <div
-              style={{
-                backgroundColor: "#F3F4F6",
-                padding: "16px",
-                borderRadius: "6px",
-                marginTop: "24px",
-                textAlign: "center",
-              }}
+        {/* Footer */}
+        <div style={footerStyle}>
+          <div>
+            <a
+              href={websiteUrl}
+              style={footerLinkStyle}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <p style={{ fontSize: "16px", color: "#10B981", fontWeight: "600" }}>
-                ✓ Password Reset Complete
-              </p>
-            </div>
-
-            <p style={{ marginTop: "24px" }}>
-              If you didn&apos;t make this change, please contact our support team immediately as your account security may be compromised.
-            </p>
+              Visit Watawara
+            </a>{" "}
+            |
+            <a
+              href={privacyUrl}
+              style={footerLinkStyle}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Privacy Policy
+            </a>{" "}
+            |
+            <a
+              href={helpUrl}
+              style={footerLinkStyle}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Help Center
+            </a>
           </div>
-
-          <div
-            style={{
-              borderTop: "1px solid #e5e7eb",
-              paddingTop: "24px",
-              marginTop: "32px",
-              textAlign: "center",
-              color: "#6B7280",
-              fontSize: "14px",
-            }}
-          >
-            <p>
-              For security purposes, we recommend regularly updating your password and enabling two-factor authentication if available.
-            </p>
-            <p style={{ marginTop: "12px" }}>
-              Need help? Contact our support team
-            </p>
-            <a href="mailto:taiwooyetade67@gmail.com">taiwooyetade@gmail.com</a>
+          <div style={mottoStyle}>
+            &apos;What you order is what you get!!!&apos;
+          </div>
+          <div style={copyrightStyle}>
+            &copy; {new Date().getFullYear()} Watawara. All rights reserved.{" "}
+            <br />
+            Need help? Contact{" "}
+            <a href={`mailto:${supportEmail}`} style={footerLinkStyle}>
+              {supportEmail}
+            </a>
           </div>
         </div>
-      </body>
-    </html>
+      </div>
+    </div>
   );
 }
+

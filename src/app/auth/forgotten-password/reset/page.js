@@ -4,6 +4,7 @@ import Link from "next/link"
 import Password from "@/utilities/password/Password"
 import { resetPassword } from "@/backend/action/user"
 import Input from "@/utilities/input/Input"
+// import Resend from "./Resend"
 
 export const metadata = {
   title: `Watawara | Welcome Back`,
@@ -57,7 +58,7 @@ export default async function Home({searchParams}) {
               value="Reset Password"
             />
           </form>
-
+          {/* <Resend email={email} /> */}
           <p className="text-sm text-gray-800">
             Remembered your password?{" "}
             <Link

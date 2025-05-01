@@ -8,7 +8,7 @@ function RateStarIcon () {
 export default function Rating ({rating, size}) {
 
     return (
-      <div className="w-auto relative">
+      <div className="w-auto relative -top-4 -left-3">
         <RatingStar
           starIcon={RateStarIcon}
           maxScore={5}
