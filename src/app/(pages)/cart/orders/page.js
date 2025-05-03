@@ -68,7 +68,7 @@ export const metadata = {
 
 export default async function Home() {
   return (
-    <div className="w-full h-full relative bg-white p-2 rounded-md border border-gray-300">
+    <div className="w-full max-md:w-11/12 mx-auto h-full relative">
       <h1 className="text-xl font-bold text-black mb-3">Your Orders</h1>
       <div className="mx-auto w-full mb-6 flex max-md:flex-col gap-3">
         <AllOrders />

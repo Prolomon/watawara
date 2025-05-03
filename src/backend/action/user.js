@@ -22,6 +22,7 @@ export async function login(formData) {
     if (!email || !password) {
       return { error: "Email and password are required." };
     }
+    await Mailer(email, "login");
     await signIn("credentials", {
       email,
       password,
@@ -51,8 +52,9 @@ export async function login(formData) {
 
 export const logout = async () => {
   // Use the server-side signOut from auth.js
-  await signOut({ redirect: true }); // Perform sign out without automatic redirect first
-  redirect("/auth/login"); // Manually redirect after sign out is complete
+  await signOut({ redirect: true });
+  
+  redirect("/auth/login");
 };
 
 export const updateAccount = async (formData) => {

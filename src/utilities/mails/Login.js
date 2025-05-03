@@ -1,16 +1,18 @@
+import React from 'react'; // Import React
 import { dbConnect } from "@/backend/server/server";
 import { User } from "@/backend/models/user.schema";
 
 const brandColor = "#f59e0b"; // Watawara brand color
 
+
 const containerStyle = {
   fontFamily:
     '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
-  backgroundColor: "#f4f4f4", // Light grey background
+  backgroundColor: "#f4f4f4",
 };
 
 const cardStyle = {
-  backgroundColor: "#ffffff", // White card background
+  backgroundColor: "#ffffff",
   border: "1px solid #e0e0e0",
   borderRadius: "8px",
   padding: "15px",
@@ -22,18 +24,17 @@ const cardStyle = {
 
 const logoContainerStyle = {
   marginBottom: "25px",
-  // Add height/width constraints if your logo needs them
 };
 
 const logoStyle = {
-  maxWidth: "150px", // Adjust max-width as needed
+  maxWidth: "150px",
   height: "auto",
 };
 
 const headingStyle = {
   fontSize: "26px",
   fontWeight: "bold",
-  color: "#333333", // Dark grey heading
+  color: "#333333",
   marginBottom: "15px",
 };
 
@@ -45,36 +46,26 @@ const subHeadingStyle = {
 
 const textStyle = {
   fontSize: "16px",
-  color: "#555555", // Medium grey text
+  color: "#555555",
   lineHeight: "1.6",
   marginBottom: "15px",
-  textAlign: "left", // Align text left for readability
+  textAlign: "left",
 };
 
-const otpContainerStyle = {
-  margin: "30px 0",
+const detailBoxStyle = {
+    backgroundColor: '#f9f9f9',
+    padding: '15px',
+    borderRadius: '6px',
+    marginBottom: '25px',
+    textAlign: 'left',
+    borderLeft: `4px solid ${brandColor}`,
 };
 
-const otpLabelStyle = {
-  fontSize: "14px",
-  color: "#777777",
-  marginBottom: "5px",
+const detailLabelStyle = {
+    fontWeight: 'bold',
+    color: '#333333',
 };
 
-const otpStyle = {
-  fontSize: "32px",
-  fontWeight: "bold",
-  color: brandColor, // Use brand color for OTP
-  letterSpacing: "5px",
-  margin: "5px 0 20px 0",
-  padding: "12px 20px",
-  border: `2px solid ${brandColor}`, // Use brand color for border
-  borderRadius: "6px",
-  display: "inline-block",
-  backgroundColor: "#fef9c3", // Light yellow background for OTP
-};
-
-// Updated Footer Styles
 const footerStyle = {
   marginTop: "40px",
   paddingTop: "20px",
@@ -82,13 +73,13 @@ const footerStyle = {
   fontSize: "12px",
   color: "#888888",
   textAlign: "center",
-  lineHeight: "1.5", // Added line height for better spacing
+  lineHeight: "1.5",
 };
 
 const footerLinkStyle = {
-  color: "#555555", // Slightly darker link color
+  color: "#555555",
   textDecoration: "underline",
-  margin: "0 5px", // Add some horizontal spacing between links
+  margin: "0 5px",
 };
 
 const mottoStyle = {
@@ -102,17 +93,27 @@ const copyrightStyle = {
   marginTop: "15px",
 };
 
-export async function Otp({
-  // Note: Changed to named export
+export async function Login({ // Named export for the new component
   email,
+  loginTime, // Example: new Date().toLocaleString()
+  deviceInfo, // Example: "Chrome on Windows"
+  ipAddress, // Example: "192.168.1.1"
+  latitude,  // Example: 40.7128
+  longitude, // Example: -74.0060
   logoUrl = "https://gonf7za2h5pl262h.public.blob.vercel-storage.com/archive/long-o33wF29ES14EXO9L1weotcHCURRykJ.png",
-  websiteUrl = process.env.WATAWARA_BASE_URL,
+  websiteUrl = process.env.WATAWARA_BASE_URL || 'https://watawara.vercel.app',
   privacyUrl = "#",
   helpUrl = "#",
   unsubscribeUrl = "#",
 }) {
   await dbConnect();
   const user = await User.findOne({ email });
+
+  // Basic check if user exists
+  if (!user) {
+    console.error(`User not found for email: ${email} in Login template`);
+    return null;
+  }
 
   return (
     <div style={containerStyle}>
@@ -122,36 +123,47 @@ export async function Otp({
           <img src={logoUrl} alt="Watawara Logo" style={logoStyle} />
         </div>
 
-        <h1 style={headingStyle}>Reset Your Watawara Password</h1>
+        <h1 style={headingStyle}>Account Login Notification</h1>
         <h2 style={subHeadingStyle}>
-          Hi {user.fullname}, let&apos;s secure your account.
+          Hi {user.fullname || 'User'}, we noticed a login to your account.
         </h2>
 
         <p style={textStyle}>
-          We received a request to reset the password for your Watawara account.
-        </p>
-        <p style={textStyle}>
-          Please use the One-Time Password (OTP) below to proceed with setting a
-          new password.
+          This is to inform you that your Watawara account was recently accessed. Here are the details we have:
         </p>
 
-        {/* OTP Section */}
-        <div style={otpContainerStyle}>
-          <div style={otpLabelStyle}>Your Password Reset Code:</div>
-          <div style={otpStyle}>{user.otp}</div>
+        {/* Login Details Section (Updated) */}
+        <div style={detailBoxStyle}>
+          {loginTime && <p style={{ margin: '5px 0' }}><span style={detailLabelStyle}>Time:</span> {loginTime}</p>}
+          {deviceInfo && <p style={{ margin: '5px 0' }}><span style={detailLabelStyle}>Device/Browser:</span> {deviceInfo}</p>}
+          {ipAddress && <p style={{ margin: '5px 0' }}><span style={detailLabelStyle}>IP Address:</span> {ipAddress}</p>}
+          {latitude && longitude && (
+            <p style={{ margin: '5px 0' }}>
+              <span style={detailLabelStyle}>Approx. Location (Lat/Lon):</span> {latitude.toFixed(4)}, {longitude.toFixed(4)}
+            </p>
+          )}
+          {!loginTime && !deviceInfo && !ipAddress && !latitude && !longitude && (
+             <p style={{ margin: '5px 0' }}>A login occurred recently.</p>
+          )}
         </div>
 
+
         <p style={textStyle}>
-          Enter this code on the password reset page. This code is valid for a
-          limited time.
+          If this was you, you can safely ignore this email. Your account is secure.
         </p>
         <p style={textStyle}>
-          If you did not request a password reset, please ignore this email or
-          contact our support if you have concerns. Your account remains secure.
+          If you do <strong>not</strong> recognize this login activity, please take immediate steps to secure your account:
         </p>
+        <ul style={{...textStyle, paddingLeft: '20px'}}>
+            <li>Change your password immediately via our website.</li>
+            <li>Review your account settings and recent activity.</li>
+            <li>Contact our support team via the Help Center if you need assistance.</li>
+        </ul>
+
 
         {/* Footer (Reused) */}
         <div style={footerStyle}>
+          {/* ... existing footer code ... */}
           <div>
             <a
               href={websiteUrl}
@@ -201,3 +213,5 @@ export async function Otp({
     </div>
   );
 }
+
+// Consider renaming the file to EmailTemplates.js or similar if it holds multiple templates.

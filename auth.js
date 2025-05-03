@@ -62,18 +62,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           if (user.status === "ban") {
             throw new CredentialsSignin("Account banned"); // Throw error for banned status
           }
-          // End of status checks
 
-          return user; // Return user only if active and not banned
+          const sessionUser = {
+            id: user._id.toString(),
+            email: user.email,
+            role: user.role,
+            status: user.status,
+          };
+
+          return sessionUser; 
         } catch (error) {
-          // If the error is already a CredentialsSignin, rethrow it directly
-          if (error instanceof CredentialsSignin) {
-            throw error;
-          }
-          // Otherwise, wrap other errors
-          console.error("Authorization Error:", error); // Log unexpected errors
-          throw new CredentialsSignin("An authentication error occurred.");
-          // Note: The 'return null' after throw is unreachable and can be removed.
         }
       },
     }),

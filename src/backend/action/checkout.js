@@ -5,30 +5,22 @@ import { auth } from "../../../auth";
 import { User } from "../models/user.schema";
 import { nanoid } from "nanoid";
 import { Products } from "../models/products.schema";
+import { Orders } from "../models/order.schema";
+import { Mailer } from "../mailer";
 
 export const checkRedirect = async (subTotal, tax, shipping, total) => {
   const session = await auth();
   const userId = session?.user?._id;
 
-  if (!session || !userId) {
-    redirect("/auth/login");
-  }
-
+  if (!session || !userId) redirect("/auth/login")
   await dbConnect();
   const user = await User.findOne({ _id: userId });
+  if (!user) redirect("/auth/login");
 
-  if (!user) {
-    redirect("/auth/login");
-  }
-
-  // Get existing checkout products if they exist
+  
   const existingProducts = user.checkout?.products || [];
 
-  if (existingProducts.subTotal === subTotal) {
-    return;
-  }
-
-
+  if (existingProducts.subTotal === subTotal) return;
   // Update operation - preserves existing products
  await User.updateOne(
    { _id: userId },
@@ -44,7 +36,7 @@ export const checkRedirect = async (subTotal, tax, shipping, total) => {
          shipping: shipping,
          total,
          status: "active",
-         products: existingProducts, // Include products directly
+         products: existingProducts
        },
      },
    }
@@ -53,7 +45,7 @@ export const checkRedirect = async (subTotal, tax, shipping, total) => {
   redirect("/checkout");
 };
 
-export const add2Checkout = async (productId, quantity, color, size, price) => {
+export const add2Checkout = async (productId, quantity, color, size) => {
   // Get form data
   // const productId 
   const session = await auth();
@@ -71,7 +63,7 @@ export const add2Checkout = async (productId, quantity, color, size, price) => {
     userId,
     {
       $push: {
-        "checkout.products": { productId, quantity, color, size },
+        "checkout.products": { productId, quantity, color, size }
       },
       $pull: {
         cart: { productId: productId },
@@ -83,31 +75,25 @@ export const add2Checkout = async (productId, quantity, color, size, price) => {
 
 export const checkoutNow = async (quantity, id, color, size) => {
   const session = await auth();
-  const userId = session?.user?._id;
+  const email = session?.user?.email;
 
   await dbConnect();
-  const user = await User.findOne({ _id: userId });
+  const user = await User.findOne({ email });
   const product = await Products.findOne({id})
   const storeId = product.storeId
 
-  if (!user || !session || !userId) {
+  if (!user || !session || !email) {
     redirect("/auth/login");
-  }
-
-  const isChecked = user.orders.find((_s) => _s.productId === id);
-
-  if (isChecked) {
-    return;
   }
   const orderId = nanoid();
   const newOrder = {
-    userId,
-    productId: id,
-    storeId,
-    quantity,
-    color,
+    userId: session?.user?._id,
     orderId,
     size,
+    subTotal: product.price * quantity,
+    tax: (product.price * quantity * 0.075).toFixed(2),
+    shipping: 0,
+    total: (product.price * quantity + product.price * quantity * 0.075).toFixed(2),
     delivery: "delivery",
     date: new Date(),
     status: "processing",
@@ -118,12 +104,20 @@ export const checkoutNow = async (quantity, id, color, size) => {
       orderShipped: false,
       ready: false,
     },
+    products: [
+      {
+        productId: id,
+        storeId,
+        quantity,
+        color,
+        size,
+      },
+    ],
   };
 
   // Corrected update operation
-  await Orders.create( { newOrder },
-    { new: true } // Return the updated document (optional)
-  );
+  await Orders.create(newOrder);
+  await Mailer(email, newOrder.orderId, "order");
 
   redirect(`/cart/orders/${orderId}`);
 };

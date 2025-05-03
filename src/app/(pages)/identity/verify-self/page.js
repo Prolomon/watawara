@@ -1,24 +1,10 @@
-"use server";
+"use client"
 import Input from "@/utilities/input/Input";
 import Select from "@/utilities/select/Select";
-import { verifyIdentity } from "@/backend/action/verify-identity";
-import { dbConnect } from "@/backend/server/server";
-import { Wallet } from "@/backend/models/wallet.schema";
-import { auth } from "../../../../../auth";
-import { redirect } from "next/navigation";
+import { createUserWallet } from "@/backend/wallet/wallet";
+import { use } from "react";
 
-export default async function Home({ params, searchParams }) {
-  const message = await searchParams;
-
-  const session = await auth();
-
-  await dbConnect();
-  const wallet = await Wallet.findOne({ userId: session?.user._id }).lean();
-
-  if (wallet) {
-    redirect(`/wallet`);
-  }
-
+export default function Home({ searchParams }) {
   return (
     <section className="w-11/12 mx-auto h-auto relative object-fit overflow-hidden py-4 mb-6">
       <h1 className="text-xl font-semibold ">
@@ -32,8 +18,8 @@ export default async function Home({ params, searchParams }) {
         <a href="tel:*996#">*996#</a>.
       </h5>
       <div className="grid grid-cols-2 max-md:grid-cols-1 gap-2 py-2 h-96 max-md:h-auto">
-        <form action={verifyIdentity}>
-          {message?.message === "all-fields-required" && (
+        <form action={createUserWallet}>
+          {/* {message?.message === "all-fields-required" && (
             <div className="text-red-500 text-sm border rounded-md p-2 border-red-600 bg-red-200">
               All fields are required
             </div>
@@ -47,7 +33,12 @@ export default async function Home({ params, searchParams }) {
             <div className="text-green-500 text-sm border rounded-md p-2 border-green-600 bg-green-200">
               Wallet not found
             </div>
-          )}
+          )} */}
+          <Input
+            type="text"
+            name={`email`}
+            title="Email address"
+          />
           <Select
             title={"identification type"}
             name={`idType`}

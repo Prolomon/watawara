@@ -12,7 +12,7 @@ export default async function Accessibility({ quantity }) {
   const session = await auth();
 
   const user = await User.findOne({ email: session?.user?.email });
-  const orders = await Orders.find({ userId: user._id });
+  const orders = await Orders.find({ userId: user?._id });
 
   return (
     <div className="w-auto flex items-center gap-3 h-auto relative">
@@ -22,7 +22,7 @@ export default async function Accessibility({ quantity }) {
           {/* shopping cart */}
           <Cart
             carts={user?.cart.length}
-            orders={orders.length}
+            orders={orders?.length}
             wishlists={user?.wishlist.length}
           />
           <Link
@@ -36,7 +36,7 @@ export default async function Accessibility({ quantity }) {
       {/* language */}
       <Language />
       {/* customer account */}
-      <Account avatar={user.avatar} fullname={user.fullname} />
+      <Account avatar={user?.avatar} fullname={user?.fullname} />
     </div>
   );
 }

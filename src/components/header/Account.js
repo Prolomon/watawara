@@ -33,7 +33,7 @@ export default function Account({avatar, fullname}) {
 
     const info = [
         {
-          "href": `/account/${fullname.toLowerCase().slice(0, fullname.indexOf(" "))}`,
+          "href": `/account/${fullname?.toLowerCase().slice(0, fullname.indexOf(" "))}`,
           "text": "Profile",
           "icon": <User size={20} />
         },

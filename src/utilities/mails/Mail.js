@@ -5,7 +5,6 @@ import { User } from "@/backend/models/user.schema";
 const brandColor = '#f59e0b'; 
 const containerStyle = {
   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
-  padding: '20px',
   backgroundColor: '#f4f4f4', // Light grey background
 };
 
@@ -13,9 +12,9 @@ const cardStyle = {
   backgroundColor: '#ffffff', // White card background
   border: '1px solid #e0e0e0',
   borderRadius: '8px',
-  padding: '30px',
-  maxWidth: '600px',
-  margin: '20px auto',
+  padding: '15px',
+  maxWidth: '100%',
+  margin: '10px auto',
   textAlign: 'center',
   boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
 };

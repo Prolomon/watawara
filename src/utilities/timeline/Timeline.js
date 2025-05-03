@@ -61,7 +61,7 @@ export default function Timeline({ order }) {
   return (
     <div className="w-4/12 max-md:w-full h-auto bg-white rounded-md border border-gray-300">
       <div className="w-full p-4 border-b border-gray-300">
-        <h1 className="text-lg text-gray-700 uppercase font-semibold">
+        <h1 className="text-base text-gray-700 uppercase font-semibold">
           Order ID #{order.orderId}
         </h1>
       </div>

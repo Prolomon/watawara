@@ -22,7 +22,7 @@ export default async function Information () {
             View Profile
           </Link>
         </div>
-        <ul className="text-base capitalize text-black">
+        <ul className="text-sm capitalize text-black">
           <li className="flex items-center justify-between mb-2">
             <h3 className="font-semibold text-gray-900">Name:</h3>
             <p className="text-gray-800">{user.fullname}</p>

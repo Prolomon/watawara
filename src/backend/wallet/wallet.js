@@ -1,12 +1,12 @@
-// Example using Flutterwave's API (Node.js backend)
+import axios from "axios";
 
-const createUserWallet = async (userData) => {
+export const createUserWallet = async (userData) => {
   const response = await axios.post(
     "https://api.flutterwave.com/v3/virtual-account-numbers",
     {
-      email: userData.email,
+      email: userData.get("email"),
       is_permanent: true,
-      bvn: userData.bvn, // if required in your region
+      bvn: userData.get("idNumber"), // if required in your region
       tx_ref: `wallet-acc-${Date.now()}`,
       narration: `${userData.firstName}'s Wallet Account`,
     },

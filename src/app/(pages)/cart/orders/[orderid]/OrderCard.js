@@ -6,18 +6,40 @@ import { dbConnect } from "@/backend/server/server";
 import { Products } from "@/backend/models/products.schema";
 
 export default async function OrderCard({
-  orderId,
   productId,
   date,
   quantity,
+  status,
   delivery,
 }) {
   await dbConnect();
   const product = await Products.findOne({ id: productId });
+  
+  // Generate URL-safe slugs
+  const categorySlug = product.category?.toLowerCase().replace(/\s+/g, "-");
+  const productSlug = product.name?.toLowerCase().replace(/\s+/g, "-");
 
   return (
     <li className="w-full h-auto max-md:h-auto rounded-md border border-gray-200 relative mb-2.5">
-      <Link href={`/cart/orders/${orderId}`}>
+      <Link href={`/category/${categorySlug}/product/${productSlug}`}>
+        <div className="flex items-center justify-between p-3 border-b border-gray-300">
+          <h3 className="inline-block text-sm rounded-full uppercase text-gray-600 font-semibold">
+            Category: {product.category}
+          </h3>
+          <h3
+            className={`inline-block text-sm capitalize rounded-sm px-1.5 ${
+              status === "processing"
+                ? "text-amber-400 bg-amber-100"
+                : status === "returned"
+                  ? "text-red-600 bg-red-100"
+                  : status === "cancelled"
+                    ? "text-gray-500 bg-gray-200"
+                    : "text-green-600 bg-green-100"
+            } font-semibold`}
+          >
+            {status}
+          </h3>
+        </div>
         {/* product name, quantity and brand */}
         <div className="flex gap-2 p-3 h-[7.5rem]">
           <Image
@@ -50,9 +72,7 @@ export default async function OrderCard({
               {quantity} x {Currency(product.price)}
             </div>
             <div className="w-full flex items-center justify-start text-sm font-semibold text-gray-600 text-left gap-3 capitalize">
-              <span>
-                {new Date(date).toISOString().split("T")[0].replace(/\//g, "-")}
-              </span>
+              <span>{new Date(date).toString().slice(0, 10)}</span>
               <Square size={13} className="text-gray-400 fill-gray-400" />
               <span>{delivery}</span>
             </div>

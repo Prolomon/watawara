@@ -2,7 +2,6 @@
 import { dbConnect } from "@/backend/server/server";
 import { auth } from "../../../auth";
 import { User } from "@/backend/models/user.schema";
-import { Products } from "../models/products.schema";
 import { redirect } from "next/navigation";
 
 export const wishlist

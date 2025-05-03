@@ -5,51 +5,48 @@ import CreateReview from "@/utilities/review/CreateReview";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import Map from "./Map";
-import Description from "./Description";
+import { images } from "@/constants";
 import { dbConnect } from "@/backend/server/server";
 import { User } from "@/backend/models/user.schema";
 import { auth } from "../../../../../../auth";
-import { Products } from "@/backend/models/products.schema";
 import { Orders } from "@/backend/models/order.schema";
+import AllOrders from "./AllOrders";
+import Currency from "@/utilities/currency/Currency";
 
 export async function generateMetadata({ params }) {
   const { orderid } = await params;
-  const session = await auth();
-  await dbConnect();
-  const user = await User.findOne({ email: session.user.email });
-  const ord = await Orders.findOne({ userId: user._id, orderId: orderid });
 
-  const product = await Products.findOne({ id: ord.productId });
   return {
     metadataBase: new URL(`${process.env.WATAWARA_BASE_URL}`),
-    title: product.name,
-    description: product.description,
+    title: "Orders Page",
+    description: `"Track your order status, manage deliveries, and stay updated on your purchases from Watawara - Your trusted marketplace for quality products"`,
     icons: {
-      icon: product.images[0],
-      shortcut: product.images[0],
-      apple: product.images[0],
+      icon: images.logo,
+      shortcut: images.logo,
+      apple: images.logo,
       other: {
         rel: "apple-touch-icon-precomposed",
-        url: product.images[0],
+        url: images.logo,
       },
     },
     manifest: "/manifest.json",
     openGraph: {
-      title: product.name,
-      description: product.description,
+      title: "Orders Page",
+      description:
+        "Track your order status, manage deliveries, and stay updated on your purchases from Watawara - Your trusted marketplace for quality products",
       url: `${process.env.WATAWARA_BASE_URL}/cart/orders/${orderid}`,
       siteName: "Watawara",
       image: [
         {
-          url: product.images[0], // Must be an absolute URL
+          url: images.logo, // Must be an absolute URL
           width: 800,
           height: 600,
         },
         {
-          url: product.images[0], // Must be an absolute URL
+          url: images.logo, // Must be an absolute URL
           width: 1800,
           height: 1600,
-          alt: product.name,
+          alt: "Orders Page",
         },
       ],
       locale: "en_NG",
@@ -57,14 +54,15 @@ export async function generateMetadata({ params }) {
     },
     twitter: {
       card: "summary_large_image",
-      title: product.name,
-      description: product.description,
-      siteId: product.id,
+      title: "Orders Page",
+      description:
+        "Track your order status, manage deliveries, and stay updated on your purchases from Watawara - Your trusted marketplace for quality products",
+      siteId: orderid,
       creator: "Tri3G Innovative Limited",
-      creatorId: product.id,
+      creatorId: orderid,
       image: {
-        url: product.images[0],
-        alt: product.name,
+        url: images.logo,
+        alt: "Orders Page",
       },
       // app: {
       //   name: "Watawara",
@@ -97,7 +95,36 @@ export default async function Home({ params }) {
       </div>
       <div className="w-full flex max-md:flex-col gap-3 mb-10">
         <div className="w-8/12 max-md:w-full max-md:mb-3">
-          <Description productId={ord.productId} quantity={ord.quantity} />
+          <AllOrders products={ord.products} date={ord.date} status={ord.status} delivery={ord.delivery} />
+          <div className="w-full">
+            <div className="w-full flex items-center justify-between">
+              <h1 className="text-xl font-semibold">Order Summary</h1>
+            </div>
+            <div className="w-full flex items-center justify-between mt-3">
+              <span className="text-sm text-gray-600">Subtotal</span>
+              <span className="text-sm text-gray-600">
+                {Currency(ord.subTotal)}
+              </span>
+            </div>
+            <div className="w-full flex items-center justify-between mt-3">
+              <span className="text-sm text-gray-600">Tax</span>
+              <span className="text-sm text-gray-600">
+                {Currency(ord.tax)}
+              </span>
+            </div>
+            <div className="w-full flex items-center justify-between mt-3">
+              <span className="text-sm text-gray-600">Shipping</span>
+              <span className="text-sm text-gray-600">
+                {Currency(ord.shipping)}
+              </span>
+            </div>
+            <div className="w-full flex items-center justify-between mt-3 font-semibold border-t border-gray-600 pt-2">
+              <span className="text-base text-gray-600">Total</span>
+              <span className="text-base text-gray-600">
+                {Currency(ord.total)}
+              </span>
+            </div>
+          </div>
         </div>
         <div className="w-4/12 max-md:w-full mt-3">
           <Seller {...ord} />

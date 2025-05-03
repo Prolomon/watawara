@@ -4,7 +4,7 @@ import { auth } from "../../../auth";
 import { Orders } from "../models/order.schema";
 import { redirect } from "next/navigation";
 import { User } from "../models/user.schema";
-// import { generateOrderId } from "../generateOrderId";
+import { Mailer } from "../mailer";
 import { Products } from "../models/products.schema";
 import { cookies } from "next/headers";
 import { nanoid } from "nanoid";
@@ -15,14 +15,13 @@ export const cancelOrder = async (orderId) => {
 
   await dbConnect();
 
-  // Update the specific order's status
   const result = await Orders.updateOne(
     {
       userId,
       orderId,
     },
     {
-      $set: { "orders.$.status": "cancelled" },
+      $set: { status: "cancelled" },
     }
   );
 
@@ -36,16 +35,15 @@ export const cancelOrder = async (orderId) => {
 
 export const orderAction = async () => {
   const session = await auth();
-  const userId = session?.user?._id;
-  const stored = (await cookies()).get("wata_delivery")?.value || 0;
+  const email = session?.user?.email;
   const delivery = (await cookies()).get("wata_delivery_type")?.value || 0;
 
-  if (!session || !userId) {
+  if (!session || !email) {
     redirect("/auth/login");
   }
 
   await dbConnect();
-  const user = await User.findOne({ _id: userId });
+  const user = await User.findOne({ email });
 
   if (!user) {
     redirect("/auth/login");
@@ -84,42 +82,49 @@ export const orderAction = async () => {
   const tax = (subTotal * 0.075).toFixed(2); // Assuming a tax rate of 7.5%
   const shipping = 0; // Assuming free shipping for now
 
-  const total = subTotal + Number(tax) + shipping + Number(stored.value);
+  const total = (Number(subTotal) + Number(tax) + shipping).toFixed(2);
 
   const orderId = nanoid();
-
   const productData = checkoutProductDetails.reduce(
     (acc, { id: productId, quantity, color, size, storeId }) => {
       acc.push({
-        userId,
         productId,
         storeId,
         quantity,
         color,
         size,
-        orderId,
-        delivery,
-        date: new Date(),
-        status: "processing",
-        timeline: {
-          orderPlaced: true,
-          paymentConfirmed: false,
-          orderProcessing: false,
-          orderShipped: false,
-          ready: false,
-        },
       });
       return acc;
     },
     []
   );
 
+  const mainOrder = {
+    userId: session?.user?._id,
+    orderId,
+    delivery,
+    date: new Date(),
+    status: "processing",
+    subTotal,
+    tax,
+    shipping,
+    total,
+    timeline: {
+      orderPlaced: true,
+      paymentConfirmed: false,
+      orderProcessing: false,
+      orderShipped: false,
+      ready: false,
+    },
+    products: productData,
+  };
+
   if (user?.checkout?.products?.length > 0) {
-    // Create multiple orders using insertMany
-    await Orders.insertMany(productData);
+    await Orders.create(mainOrder);
     
-    // Clear the user's checkout
-    await User.findByIdAndUpdate(userId, { checkout: [] });
+    await User.updateOne({email}, { $set: { "checkout.products": [] } });
+
+    await Mailer( email, "order", mainOrder.orderId);
     
     redirect(`/cart/orders`);
   }
