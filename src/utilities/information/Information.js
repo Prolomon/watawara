@@ -7,7 +7,7 @@ export default async function Information () {
 
     await dbConnect()
     const session = await auth()
-    const user = await User.findOne({_id: session.user._id})
+    const user = await User.findOne({ email: session?.user?.email})
 
     return (
       <div className="w-full p-3 bg-white border border-gray-200 rounded-md">
