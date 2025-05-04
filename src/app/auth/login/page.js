@@ -9,7 +9,7 @@ export const metadata = {
 export default async function Home({ params }) {
   return (
     <main className="w-11/12 mx-auto h-dvh flex items-center justify-center relative object-fit py-4">
-      <div className="w-10/12 flex mx-auto border border-gray-400 max-md:border-none rounded-md overflow-hidden">
+      <div className="w-10/12 max-md:w-full flex mx-auto border border-gray-400 max-md:border-none rounded-md overflow-hidden">
         <Image
           priority
           width={100}
