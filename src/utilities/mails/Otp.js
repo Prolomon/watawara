@@ -104,6 +104,7 @@ const copyrightStyle = {
 
 export async function Otp({
   // Note: Changed to named export
+  otp,
   email,
   logoUrl = "https://gonf7za2h5pl262h.public.blob.vercel-storage.com/archive/long-o33wF29ES14EXO9L1weotcHCURRykJ.png",
   websiteUrl = process.env.WATAWARA_BASE_URL,
@@ -138,7 +139,7 @@ export async function Otp({
         {/* OTP Section */}
         <div style={otpContainerStyle}>
           <div style={otpLabelStyle}>Your Password Reset Code:</div>
-          <div style={otpStyle}>{user.otp}</div>
+          <div style={otpStyle}>{otp}</div>
         </div>
 
         <p style={textStyle}>

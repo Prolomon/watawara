@@ -7,12 +7,10 @@ import { User } from "../models/user.schema";
 import { NextResponse } from "next/server";
 import { dbConnect } from "../server/server";
 import { put } from "@vercel/blob";
-import { hash } from "bcryptjs";
+import { hash, compare } from "bcryptjs";
 import { Mailer } from "../mailer";
-
-const generateOtp = () => {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-};
+import { Otp } from "@/utilities/currency/Otp";
+import { cookies } from "next/headers";
 
 export async function login(formData) {
   try {
@@ -23,6 +21,11 @@ export async function login(formData) {
       return { error: "Email and password are required." };
     }
     await Mailer(email, "login");
+
+    // await cookies.set("_watawara_otp", await hashPassword(Otp(), 12), {
+    //   expires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes expiry
+    // });
+
     await signIn("credentials", {
       email,
       password,
@@ -53,7 +56,7 @@ export async function login(formData) {
 export const logout = async () => {
   // Use the server-side signOut from auth.js
   await signOut({ redirect: true });
-  
+
   redirect("/auth/login");
 };
 
@@ -106,9 +109,6 @@ export const updateAccount = async (formData) => {
       throw new Error("User not found");
     }
 
-    console.log("User data successfully");
-
-    // Return a redirect response
     return;
   } catch (error) {
     console.error("Error updating identity:", error);
@@ -123,10 +123,14 @@ export async function resetPassword(formData) {
   await dbConnect();
   const otp = formData.get("otp"),
     password = formData.get("password"),
-    email = formData.get("email");
-  const user = await User.findOne({ email });
-  console.log(user, user.otp == otp);
-  if (user.otp != otp) {
+    email = formData.get("email"),
+    hashOtp = cookies().get("_watawara_otp")?.value;
+
+  console.log(hashOtp);
+
+  const isMatch = await compare(String(otp), hashOtp);
+  console.log(isMatch);
+  if (!isMatch) {
     redirect(
       "/auth/forgotten-password/reset?status=Invalid OTP code provided&email=" +
         email
@@ -134,11 +138,8 @@ export async function resetPassword(formData) {
   }
   const saltRounds = 12;
   const hashPassword = await hash(password, saltRounds);
-  await User.updateOne({ email }, { password: hashPassword });
-  await User.updateOne({ email }, { otp: null });
-  
+  await User.updateOne({ email }, { password: hashPassword, otp: null });
   await Mailer(email, "reset");
-
   redirect("/auth/login");
 }
 
@@ -149,35 +150,30 @@ export async function forgottenPassword(e) {
 
   if (!user)
     redirect(
-      "/auth/forgotten-password?message=eEmail does not exist in database"
+      "/auth/forgotten-password?message=Email does not exist in database"
     );
+  const otp = await Otp();
+  (await cookies()).set("_watawara_otp", await hash(String(otp), 10), {
+    expires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes expiry
+  });
 
-  const otp = generateOtp();
-  const result = await User.updateOne({ email }, { otp });
+  await Mailer(email, "otp", otp);
 
-  await Mailer(email, "otp");
-
-  redirect(
-    "/auth/forgotten-password/reset?authCode=werygre37er327r323rhr3hr237r32gqr7g23rg3yeg3ryg73748rdndnwirurr&email=" +
-      email
-  );
+  redirect("/auth/forgotten-password/reset?authCode=kwt&email=" + email);
 }
 
 export async function deleteAccount(formData) {
   const session = await auth();
   const email = formData.get("email");
-
   const curUser = await User.findOne({ email });
-
-  if (!email || !curUser || session.user.email !== curUser) {
-    redirect("/settings?validate=failed");
-  }
-
-  await User.findOneAndDelete({ email: session.user.email });
-
-  await signOut({ redirect: false });
-
-  redirect("/");
+  if (!email || !curUser || session.user.email != curUser.email) redirect("/settings?validate=failed");
+  const otp = await Otp();
+  (await cookies()).set("_watawara_otp", await hash(String(otp), 10), {
+    expires: new Date(Date.now() + 10 * 60 * 1000),
+  });
+  await signOut({ redirect: true });
+  await Mailer(email, "deleteOtp", otp);
+  redirect("/auth/otp?email=" + email + "&authType=deletion");
 }
 
 export const createAccount = async (formData) => {
@@ -196,8 +192,11 @@ export const createAccount = async (formData) => {
   if (existingUser) redirect("/auth/signup?message=email-exists");
   const saltRounds = 10;
   const hashPassword = await hash(password, saltRounds);
+  const otp = await Otp();
+  await cookies().set("_watawara_otp", await hash(String(otp), 10), {
+    expires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes expiry
+  });
 
-  // Create new user with hashed password
   const newUser = await User.create({
     fullname,
     email,
@@ -205,32 +204,40 @@ export const createAccount = async (formData) => {
     dob,
     gender,
     password: hashPassword,
-    otp: generateOtp(),
     status: "inactive",
   });
 
   if (!newUser) redirect("/auth/signup?message=user-creation-error");
 
-  await Mailer(email, "welcome");
+  await Mailer(email, "welcome", otp);
 
-  redirect("/auth/otp?email=" + email);
+  redirect("/auth/otp?email=" + email + "&authType=authenticate");
 };
 
 export const userOtp = async (formData) => {
   const email = formData.get("email");
   const otp = formData.get("otp");
+  const authType = formData.get("authType");
   await dbConnect();
 
   if (!otp) redirect("/auth/login?message=all-fields-required");
 
   // Check if user already exists
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }),
+  hashOtp = cookies().get("_watawara_otp")?.value;
 
   if (user.status === "active") redirect("/auth/login");
+  const isMatch = await compare(String(otp), hashOtp);
 
-  if (user.otp != otp) redirect(`/auth/otp?email=${email}&message=invalid-otp`);
+  if (!isMatch) redirect(`/auth/otp?email=${email}&message=invalid-otp`);
 
-  await User.updateOne({ email }, { status: "active", otp: null });
+  if (authType === "authenticate") {
+    await Mailer(email, "login");
+    await User.updateOne({ email }, { status: "active", otp: null });
+  } else {
+    await Mailer(email, "delete");
+    await User.deleteOne({ email });
+  }
 
   redirect("/auth/login");
 };

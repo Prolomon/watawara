@@ -9,8 +9,9 @@ import CheckButton from "./CheckButton";
 export default async function Checkout() {
   const session = await auth();
   await dbConnect();
+  const email = session?.user?.email;
 
-  const user = await User.findOne({ _id: session?.user?._id });
+  const user = await User.findOne({ email });
 
   if (!user || !session) {
     redirect("/auth/login");

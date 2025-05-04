@@ -2,6 +2,7 @@
   "name": "Watawara",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -20,6 +21,7 @@
     "mongodb": "^6.15.0",
     "mongoose": "^8.13.2",
     "nanoid": "^5.1.5",
+    "net": "^1.0.2",
     "next": "^15.3.0",
     "next-auth": "^5.0.0-beta.25",
     "rating-star": "^1.1.0",
@@ -27,6 +29,7 @@
     "react-dom": "^19.0.0",
     "react-spinners": "^0.16.1",
     "sharp": "^0.33.5",
+    "tls": "^0.0.1",
     "uuid": "^11.1.0"
   },
   "devDependencies": {

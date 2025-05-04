@@ -1,14 +1,16 @@
+"use server"
 import Image from "next/image";
 import { User } from "@/backend/models/user.schema";
 import { auth } from "../../../../../../../auth";
 import { dbConnect } from "@/backend/server/server";
+import { Orders } from "@/backend/models/order.schema";
 
 export default async function Profile() {
-  try {
   await dbConnect()
   const session = await auth();
+  const orders = await Orders.find({ userId: String(session?.user?._id)})
 
-  const user = await User.findOne({ email: session?.user.email });
+  const user = await User.findOne({ email: session?.user?.email });
 
   return (
     <form className="">
@@ -54,7 +56,7 @@ export default async function Profile() {
                 </h6>
               </li>
               <li className="w-full flex flex-col place-content-center text-center">
-                <h2 className="text-sm text-gray-200">{user.orders.length}</h2>
+                <h2 className="text-sm text-gray-200">{orders.length}</h2>
                 <h6 className="text-[12px] text-gray-300 font-semibold">
                   Orders
                 </h6>
@@ -74,7 +76,4 @@ export default async function Profile() {
       </div>
     </form>
   );
-} catch (e) {
-  console.log(e)
-}
 }

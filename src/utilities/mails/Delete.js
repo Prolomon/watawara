@@ -1,11 +1,8 @@
-import React from 'react'; // Import React
+"use server"
 import { dbConnect } from "@/backend/server/server";
 import { User } from "@/backend/models/user.schema";
-import getClientInfo from '../currency/getClientInfo';
 
-const brandColor = "#f59e0b"; // Watawara brand color
-
-
+const brandColor = "#f59e0b"; 
 const containerStyle = {
   fontFamily:
     '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
@@ -53,18 +50,9 @@ const textStyle = {
   textAlign: "left",
 };
 
-const detailBoxStyle = {
-    backgroundColor: '#f9f9f9',
-    padding: '15px',
-    borderRadius: '6px',
-    marginBottom: '25px',
-    textAlign: 'left',
-    borderLeft: `4px solid ${brandColor}`,
-};
-
 const detailLabelStyle = {
-    fontWeight: 'bold',
-    color: '#333333',
+  fontWeight: "bold",
+  color: "#333333",
 };
 
 const footerStyle = {
@@ -94,21 +82,19 @@ const copyrightStyle = {
   marginTop: "15px",
 };
 
-export async function Login({ // Named export for the new component
+export async function Deleted({
   email,
   logoUrl = "https://gonf7za2h5pl262h.public.blob.vercel-storage.com/archive/long-o33wF29ES14EXO9L1weotcHCURRykJ.png",
-  websiteUrl = process.env.WATAWARA_BASE_URL || 'https://watawara.vercel.app',
+  websiteUrl = process.env.WATAWARA_BASE_URL || "https://watawara.vercel.app",
   privacyUrl = "#",
   helpUrl = "#",
-  unsubscribeUrl = "#",
 }) {
-  await dbConnect();
-  const user = await User.findOne({ email });
-  if (!user) {
-    console.error(`User not found for email: ${email} in Login template`);
-    return null;
-  }
-
+    await dbConnect();
+    const user = await User.findOne({ email });
+    if (!user) {
+      console.error(`User not found for email: ${email} in Login template`);
+      return null;
+    }
   return (
     <div style={containerStyle}>
       <div style={cardStyle}>
@@ -116,37 +102,34 @@ export async function Login({ // Named export for the new component
           <img src={logoUrl} alt="Watawara Logo" style={logoStyle} />
         </div>
 
-        <h1 style={headingStyle}>Account Login Notification</h1>
+        {/* Updated Headings */}
+        <h1 style={headingStyle}>Your Watawara Account Has Been Deleted</h1>
         <h2 style={subHeadingStyle}>
-          Hi {user.fullname || 'User'}, we noticed a login to your account.
+          We&apos;re sorry to see you go{userName ? `, ${userName}` : ""}!
         </h2>
 
         <p style={textStyle}>
-          This is to inform you that your Watawara account was recently accessed. Here are the details we have:
+          This email confirms that your Watawara account associated with this email address has been successfully deleted as requested.
         </p>
 
-        <div style={detailBoxStyle}>
-          <p style={{ margin: '5px 0' }}><span style={detailLabelStyle}>Time:</span> {new Date().toString()}</p>
-          <p style={{ margin: '5px 0' }}><span style={detailLabelStyle}>IP Address:</span> {(await getClientInfo()).ipAddress}</p>
-          <p style={{ margin: '5px 0' }}>
-            <span style={detailLabelStyle}>Approx. Location (Lat/Lon):</span> {(await getClientInfo()).location}
-          </p>
-        </div>
-
-        <p style={textStyle}>
-          If this was you, you can safely ignore this email. Your account is secure.
-        </p>
-        <p style={textStyle}>
-          If you do <strong>not</strong> recognize this login activity, please take immediate steps to secure your account:
-        </p>
-        <ul style={{...textStyle, paddingLeft: '20px'}}>
-            <li>Change your password immediately via our website.</li>
-            <li>Review your account settings and recent activity.</li>
-            <li>Contact our support team via the Help Center if you need assistance.</li>
+        {/* Section on what they'll miss */}
+        <h3 style={{ ...headingStyle, fontSize: '20px', textAlign: 'left', marginTop: '30px' }}>What You&apos;ll Be Missing:</h3>
+        <ul style={{ ...textStyle, paddingLeft: "20px", marginBottom: '30px' }}>
+          <li>Quick access to your past order history.</li>
+          <li>Saved addresses for faster checkout.</li>
+          <li>Your personalized wishlist.</li>
+          <li>Exclusive member-only offers and updates.</li>
         </ul>
 
+        {/* Removed login details section */}
+
+        <p style={textStyle}>
+          If you deleted your account by mistake or change your mind, you&apos;re always welcome back! You can create a new account anytime by visiting our website.
+        </p>
+        <p style={textStyle}>
+          If you did not request this deletion or have any concerns, please contact our support team immediately through the Help Center.
+        </p>
         <div style={footerStyle}>
-          {/* ... existing footer code ... */}
           <div>
             <a
               href={websiteUrl}
@@ -173,16 +156,8 @@ export async function Login({ // Named export for the new component
               rel="noopener noreferrer"
             >
               Help Center
-            </a>{" "}
-            |
-            <a
-              href={unsubscribeUrl}
-              style={footerLinkStyle}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Unsubscribe
             </a>
+            {/* Removed Unsubscribe link */}
           </div>
           <div style={mottoStyle}>
             &apos;What you order is what you get!!!&apos;

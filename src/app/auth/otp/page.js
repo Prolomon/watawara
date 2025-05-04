@@ -10,7 +10,7 @@ export const metadata = {
 };
 
 export default async function Home({ searchParams }) {
-  const message = await searchParams;
+  const {email, authType} = await searchParams;
   return (
     <main className="w-11/12 mx-auto h-dvh grid place-content-center relative">
       <div className="w-10/12 flex mx-auto border border-gray-400 max-md:border-none rounded-md overflow-hidden">
@@ -35,23 +35,27 @@ export default async function Home({ searchParams }) {
             Account Verification
           </h1>
           <h5 className="text-base max-md:text-sm text-gray-600 max-md:text-center">
-            To continue enter the One-Time Password sent to ({message.email}).
+            To continue enter the One-Time Password sent to ({email}).
             Please check your inbox and follow the instructions to verify your
             account.
           </h5>
           <form action={userOtp} className="my-2">
-            {message?.message === "all-fields-required" ? (
+            {message === "all-fields-required" ? (
               <div className="w-full text-sm border-red-600 border rounded-md bg-red-300 text-red-700 p-2">
                 Provide a valid OTP code
               </div>
-            ) : message?.message === "invalid-otp" ? (
-              <div className="w-full text-sm border-red-600 border rounded-md bg-red-300 text-red-700 p-2">
+            ) : message === "invalid-otp" ? (
+              <div className="w-full text-sm border rounded-md bg-red-300 text-red-700 p-2">
                 Incorrect OTP code provided
               </div>
             ) : null}
             {/* user email address */}
             <Input title={`One-Time Password`} type={`number`} name={`otp`} />
             <input type="hidden" name="email" defaultValue={message.email} />
+            <input
+              type="hidden"
+              name="authType"
+              defaultValue={authType} />
             <input
               type="submit"
               className="w-full rounded-md border-none outline-none text-gray-800 text-sm my-1 px-2 py-1.5 bg-primary cursor-pointer capitalize hover:bg-amber-400"

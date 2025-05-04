@@ -62,22 +62,17 @@ export const metadata = {
 };
 
 export default async function Home() {
-  try {
     await dbConnect();
     const session = await auth();
     const user = await User.findOne({ email: session?.user?.email });
-
-    if (!session) {
-      redirect("/auth/login");
-    }
 
     return (
       <div className="w-full mx-auto h-full relative object-fit overflow-hidden mt-4 mb-10">
         <section className="grid gap-2">
           <EditProfile />
-          <Country curCountry={user.country} />
-          <Currencies curCurrency={user.currency} />
-          <Language curLanguage={user.language} />
+          <Country curCountry={user?.country} />
+          <Currencies curCurrency={user?.currency} />
+          <Language curLanguage={user?.language} />
           <Preference />
           <SwitchAccount />
           <Logout />
@@ -85,7 +80,4 @@ export default async function Home() {
         </section>
       </div>
     );
-  } catch (e) {
-    console.log(e);
-  }
 }

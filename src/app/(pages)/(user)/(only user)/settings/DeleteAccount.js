@@ -6,16 +6,17 @@ import { useState } from "react";
 
 export default function DeleteAccount() {
     const [email, setEmail] = useState("")
+    console.log(email);
     return (
         <details className="w-full list-none rounded-md border border-gray-300 shadow-sm p-4">
-          <summary className="w-full list-none text-sm flex justify-between items-center font-semibold text-gray-600">
-            <div className="inline-flex gap-2 items-center">
-                <UserX size={20} />
-                <span>Delete Account</span>
-            </div>
-            <ChevronDown size={20} />
-          </summary>
-          {/* form goes here */}
+            <summary className="w-full list-none text-sm flex justify-between items-center font-semibold text-gray-600">
+                <div className="inline-flex gap-2 items-center">
+                    <UserX size={20} />
+                    <span>Delete Account</span>
+                </div>
+                <ChevronDown size={20} />
+            </summary>
+            {/* form goes here */}
             <form action={deleteAccount} className="mt-3 flex max-md:flex-col items-end gap-2">
                 {/* user email address */}
                 <input 

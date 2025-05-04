@@ -10,10 +10,8 @@ import { ChevronsUpDown } from "lucide-react";
 export default async function AllOrders () {
     await dbConnect()
     const session = await auth()
-    const user = await User.findOne({_id: session.user._id})
-
+    const user = await User.findOne({ email: session?.user?.email })
     const order = await Orders.find({userId: user._id})
-    
     return (
       <ul className={`w-3/5 max-md:w-full ${order ? null : "w-full"}`}>
         {order.length !== 0 ? (

@@ -21,11 +21,11 @@ export default async function Home({searchParams}) {
         <h5 className="text-base text-gray-600 text-center">Enter your Credentials to continue shopping with amazing offers and discounts.</h5>
         <form action={createAccount} className="my-2">
           {message?.message === "user-exit" ?
-          <div className="w-full text-sm border-red-600 border rounded-md bg-red-300 text-red-700 p-2">
+          <div className="w-full text-sm border rounded-md bg-red-300 text-red-700 p-2">
             User Already Exist
-          </div> : (message?.message === "empty-fields") ? <div className="w-full text-sm border-red-600 border rounded-md bg-red-300 text-red-700 p-2">
+          </div> : (message?.message === "empty-fields") ? <div className="w-full text-sm border rounded-md bg-red-300 text-red-700 p-2">
             All Input Fields Required
-          </div> : (message?.message === "db-error") ? <div className="w-full text-sm border-red-600 border rounded-md bg-red-300 text-red-700 p-2">
+          </div> : (message?.message === "db-error") ? <div className="w-full text-sm border rounded-md bg-red-300 text-red-700 p-2">
             Error while creating user
           </div> : null}
           {/* user fullname */}

@@ -8,8 +8,8 @@ import { render } from "@react-email/render";
 import { dbConnect } from "@/backend/server/server";
 import { User } from "@/backend/models/user.schema";
 import { Login } from "@/utilities/mails/Login";
-// import { getDeviceInfo } from "@/utilities/currency/deviceInfo";
-import { getIpAddress } from "@/utilities/currency/IpAddress";
+import { Deleted } from "@/utilities/mails/Delete";
+import { DeleteOtp } from "@/utilities/mails/DeleteOtp";
 
 dotenv.config();
 
@@ -22,22 +22,23 @@ export async function Mailer(email, type, order) {
   });
   let emailComponent;
   if (type === "welcome") {
-    emailComponent = <Mail email={email} />;
+    emailComponent = <Mail email={email} otp={order} />;
   } else if (type === "reset") {
     emailComponent = <Password email={email} />;
   } else if (type === "order" && order) {
     emailComponent = <OrderMail orderId={order} email={email} />;
+  } else if (type === "deleteOtp" && order) {
+    emailComponent = <DeleteOtp otp={order} email={email} />;
   } else if (type === "login") {
     emailComponent = (
       <Login
         email={email}
-        loginTime={new Date().toDateString()}
-        deviceInfo={"Unknown Device"}
-        ipAddress={"Unknown IP"}
       />
     );
   } else if (type === "otp") {
-    emailComponent = <Otp email={email} />;
+    emailComponent = <Otp otp={order} email={email} />;
+  } else if (type === "delete") {
+    emailComponent = <Deleted email={email} />;
   } else {
     console.error(
       `Mailer Error: Unknown email type "${type}" or missing data.`
