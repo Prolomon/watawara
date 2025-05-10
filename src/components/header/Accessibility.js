@@ -29,8 +29,9 @@ export default async function Accessibility({ quantity }) {
             orders={orders?.length}
             wishlists={user?.wishlist.length}
           />
+          {/* /wallet/${wallet.uniqueId ? wallet?.uniqueId : "sign-up"} */}
           <Link
-            href={`/wallet/${wallet.uniqueId ? wallet?.uniqueId : "sign-up"}`}
+            href={`#`}
             className="bg-gray-200 text-gray-800 hover:text-primary rounded-full p-2.5 shadow-sm"
           >
             <WalletIcon size={17} />
