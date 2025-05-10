@@ -5,10 +5,10 @@ import { useState, useEffect, useRef } from "react";
 
 export default function Banner({large, small}) {
   // Default banner images for non-medium screens
-  const defaultBannerImages = large
+  const defaultBannerImages = ["/images/bannar.png"]
 
   // Medium screen banner images
-  const mediumBannerImages = small
+  const mediumBannerImages = ["/images/bannar.jpg"];
 
   const [current, setCurrent] = useState(0);
   const [isMediumScreen, setIsMediumScreen] = useState(false);
