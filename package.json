@@ -2,7 +2,6 @@
   "name": "Watawara",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -14,6 +13,7 @@
     "@vercel/blob": "^1.0.0",
     "axios": "^1.9.0",
     "bcryptjs": "^3.0.2",
+    "crypto": "^1.0.1",
     "dotenv": "^16.5.0",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.475.0",

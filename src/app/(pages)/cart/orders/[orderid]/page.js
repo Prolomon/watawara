@@ -86,7 +86,7 @@ export default async function Home({ params }) {
   const user = await User.findOne({ email: session.user.email });
   const { orderid } = await params;
   // fetch data
-  const ord = await Orders.findOne({ userId: user._id, orderId: orderid });
+  const ord = await Orders.findOne({ userId: user?.id, orderId: orderid });
   return (
     <div className="w-full mx-auto h-full relative object-fit overflow-hidden">
       <div className="w-full flex max-md:flex-col gap-3 mt-8">
@@ -95,7 +95,12 @@ export default async function Home({ params }) {
       </div>
       <div className="w-full flex max-md:flex-col gap-3 mb-10">
         <div className="w-8/12 max-md:w-full max-md:mb-3">
-          <AllOrders products={ord.products} date={ord.date} status={ord.status} delivery={ord.delivery} />
+          <AllOrders
+            products={ord.products}
+            date={ord.date}
+            status={ord.status}
+            delivery={ord.delivery}
+          />
           <div className="w-full">
             <div className="w-full flex items-center justify-between">
               <h1 className="text-xl font-semibold">Order Summary</h1>
@@ -108,9 +113,7 @@ export default async function Home({ params }) {
             </div>
             <div className="w-full flex items-center justify-between mt-3">
               <span className="text-sm text-gray-600">Tax</span>
-              <span className="text-sm text-gray-600">
-                {Currency(ord.tax)}
-              </span>
+              <span className="text-sm text-gray-600">{Currency(ord.tax)}</span>
             </div>
             <div className="w-full flex items-center justify-between mt-3">
               <span className="text-sm text-gray-600">Shipping</span>

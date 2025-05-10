@@ -10,11 +10,11 @@ import { Mailer } from "../mailer";
 
 export const checkRedirect = async (subTotal, tax, shipping, total) => {
   const session = await auth();
-  const userId = session?.user?._id;
+  const userId = session?.user?.id;
 
   if (!session || !userId) redirect("/auth/login")
   await dbConnect();
-  const user = await User.findOne({ _id: userId });
+  const user = await User.findOne({ email: session?.user?.email });
   if (!user) redirect("/auth/login");
 
   
@@ -23,11 +23,11 @@ export const checkRedirect = async (subTotal, tax, shipping, total) => {
   if (existingProducts.subTotal === subTotal) return;
   // Update operation - preserves existing products
  await User.updateOne(
-   { _id: userId },
+   { id: userId },
    {
      $set: {
        checkout: {
-         userId: session.user._id,
+         userId: session.user.id.toString(),
          payment: false,
          delivery: "delivery",
          subTotal: subTotal,
@@ -49,7 +49,7 @@ export const add2Checkout = async (productId, quantity, color, size) => {
   // Get form data
   // const productId 
   const session = await auth();
-  const userId = session?.user?._id;
+  const userId = session?.user?.id;
 
   await dbConnect();
   const user = await User.findOne({ _id: userId });
@@ -87,7 +87,7 @@ export const checkoutNow = async (quantity, id, color, size) => {
   }
   const orderId = nanoid();
   const newOrder = {
-    userId: session?.user?._id,
+    userId: session?.user?.id.toString(),
     orderId,
     size,
     subTotal: product.price * quantity,

@@ -2,13 +2,14 @@ import mongoose from "mongoose";
 
 const userSchema = mongoose.Schema(
   {
-    status: { type: String, default: "active" },
+    status: { type: String, default: "active", enum: ["active", "inactive", "ban", "special"]  },
     fullname: { type: String },
     avatar: { type: String, default: "/images/avatar.jpg" },
     email: { type: String, unique: true },
     phoneNo: { type: String, unique: true },
     dob: { type: Date },
-    gender: { type: String },
+    gender: { type: String, enum: ["male", "female"]  },
+    isWallet: { type: Boolean, default: false,  enum: [true, false]  },
     password: { type: String },
     country: { type: String, default: "nigeria" },
     currency: { type: String, default: "NGN" },
@@ -64,4 +65,15 @@ const userSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-export const User = mongoose.models.User || mongoose.model("User", userSchema);
+// export const User = mongoose.models.User || mongoose.model("User", userSchema);
+let User;
+if (mongoose && mongoose.models && mongoose.models.User) {
+  User = mongoose.models.User;
+} else if (mongoose) {
+  User = mongoose.model("User", userSchema);
+} else {
+  console.error("Mongoose is not available to define the User model.");
+  throw new Error("Mongoose instance is required to define the User model.");
+}
+
+export { User };

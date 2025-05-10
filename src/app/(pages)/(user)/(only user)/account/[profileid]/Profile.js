@@ -1,4 +1,4 @@
-"use server"
+"use server";
 import Image from "next/image";
 import { User } from "@/backend/models/user.schema";
 import { auth } from "../../../../../../../auth";
@@ -6,9 +6,9 @@ import { dbConnect } from "@/backend/server/server";
 import { Orders } from "@/backend/models/order.schema";
 
 export default async function Profile() {
-  await dbConnect()
+  await dbConnect();
   const session = await auth();
-  const orders = await Orders.find({ userId: String(session?.user?._id)})
+  const orders = await Orders.find({ userId: String(session?.user?.id) });
 
   const user = await User.findOne({ email: session?.user?.email });
 

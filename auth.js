@@ -7,10 +7,7 @@ import { dbConnect } from "@/backend/server/server";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
-  trustedOrigins: [
-    "http://localhost:3000",
-    "https://watawara.vercel.app",
-  ],
+  trustedOrigins: ["http://localhost:3000", "https://watawara.vercel.app"],
   providers: [
     Credentials({
       name: "Credentials",
@@ -52,7 +49,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           // Add status checks here
           if (!user) {
-             throw new CredentialsSignin("User not found after verification.");
+            throw new CredentialsSignin("User not found after verification.");
           }
 
           if (user.status === "inactive") {
@@ -64,15 +61,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
 
           const sessionUser = {
-            id: user._id.toString(),
+            id: user?.id.toString(),
             email: user.email,
             role: user.role,
             status: user.status,
           };
 
-          return sessionUser; 
-        } catch (error) {
-        }
+          return sessionUser;
+        } catch (error) {}
       },
     }),
     Google,

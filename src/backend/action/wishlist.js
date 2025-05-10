@@ -4,11 +4,10 @@ import { auth } from "../../../auth";
 import { User } from "@/backend/models/user.schema";
 import { redirect } from "next/navigation";
 
-export const wishlist
- = async (id) => {
+export const wishlist = async (id) => {
   // Get form data
   const session = await auth();
-  const userId = session?.user?._id;
+  const userId = session?.user?.id;
   const productId = id;
 
   await dbConnect();
@@ -22,9 +21,7 @@ export const wishlist
   const isChecked = user.wishlist.find((_s) => _s.productId === productId);
 
   if (isChecked) {
-    redirect(
-      `/cart/wishlist?message=wished`
-    );
+    redirect(`/cart/wishlist?message=wished`);
   }
 
   // Corrected update operation

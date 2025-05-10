@@ -16,10 +16,10 @@ export default async function OrderCard({
   const product = await Products.findOne({ id: productId });
 
   return (
-    <li className="w-full h-auto max-md:h-auto rounded-md border border-gray-200 relative mb-2.5">
+    <li className="w-full h-auto max-md:h-auto rounded-md relative mb-2.5">
       <Link href={`/cart/orders/${orderId}`}>
         {/* product name, quantity and brand */}
-        <div className="flex gap-2 p-3 h-[7.5rem]">
+        <div className="flex gap-2 h-[7.5rem]">
           <Image
             className="aspect-square w-auto h-full border border-gray-300 rounded-md"
             alt="order id"

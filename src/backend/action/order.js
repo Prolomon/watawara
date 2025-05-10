@@ -11,7 +11,7 @@ import { nanoid } from "nanoid";
 
 export const cancelOrder = async (orderId) => {
   const session = await auth();
-  const userId = session?.user?._id;
+  const userId = session?.user?.id;
 
   await dbConnect();
 
@@ -100,7 +100,7 @@ export const orderAction = async () => {
   );
 
   const mainOrder = {
-    userId: session?.user?._id,
+    userId: session?.user?.id,
     orderId,
     delivery,
     date: new Date(),
@@ -121,14 +121,12 @@ export const orderAction = async () => {
 
   if (user?.checkout?.products?.length > 0) {
     await Orders.create(mainOrder);
-    
-    await User.updateOne({email}, { $set: { "checkout.products": [] } });
 
-    await Mailer( email, "order", mainOrder.orderId);
-    
+    await User.updateOne({ email }, { $set: { "checkout.products": [] } });
+
+    await Mailer(email, "order", mainOrder.orderId);
+
     redirect(`/cart/orders`);
   }
   redirect(`/`);
 };
-
-

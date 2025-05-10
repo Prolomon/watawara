@@ -1,12 +1,10 @@
-"use client"
-import Input from "@/utilities/input/Input";
-import Select from "@/utilities/select/Select";
-import { createUserWallet } from "@/backend/wallet/wallet";
-import { use } from "react";
 
-export default function Home({ searchParams }) {
+import VerifyForm from "./VerifyForm";
+
+export default function Home() {
+  
   return (
-    <section className="w-11/12 mx-auto h-auto relative object-fit overflow-hidden py-4 mb-6">
+    <section className="w-11/12 mx-auto h-lvh max-md:h-auto relative object-fit overflow-hidden py-4 mb-6">
       <h1 className="text-xl font-semibold ">
         Verify your identity to continue using watawara wallet and enjoy free
         500 point which can be used for airtime.
@@ -18,44 +16,7 @@ export default function Home({ searchParams }) {
         <a href="tel:*996#">*996#</a>.
       </h5>
       <div className="grid grid-cols-2 max-md:grid-cols-1 gap-2 py-2 h-96 max-md:h-auto">
-        <form action={createUserWallet}>
-          {/* {message?.message === "all-fields-required" && (
-            <div className="text-red-500 text-sm border rounded-md p-2 border-red-600 bg-red-200">
-              All fields are required
-            </div>
-          )}
-          {message?.message === "id-exist" && (
-            <div className="text-red-500 text-sm border rounded-md p-2 border-red-600 bg-red-200">
-              ID Exist with another user try provide another ID Type
-            </div>
-          )}
-          {message?.message === "success" && (
-            <div className="text-green-500 text-sm border rounded-md p-2 border-green-600 bg-green-200">
-              Wallet not found
-            </div>
-          )} */}
-          <Input
-            type="text"
-            name={`email`}
-            title="Email address"
-          />
-          <Select
-            title={"identification type"}
-            name={`idType`}
-            options={["NIN", "BVN"]}
-          />
-          <Input
-            type="number"
-            name={`idNumber`}
-            title="identification number"
-          />
-          <Input type="date" name={`dob`} title="Date of Birth" />
-          <input
-            className="w-full bg-primary rounded-md p-1.5 mt-2 cursor-pointer font-semibold text-base text-gray-800"
-            type="submit"
-            value="Verify Me"
-          />
-        </form>
+        <VerifyForm />
         <div className="border border-gray-400 rounded-md h-full"></div>
       </div>
     </section>

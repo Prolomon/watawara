@@ -1,147 +1,148 @@
-import React from 'react';
+import React from "react";
 
-import { User } from '@/backend/models/user.schema';
-import { dbConnect } from '@/backend/server/server';
-import { Orders } from '@/backend/models/order.schema';
-import { Products } from '@/backend/models/products.schema';
-const brandColor = '#f59e0b'; // Watawara brand color
+import { User } from "@/backend/models/user.schema";
+import { dbConnect } from "@/backend/server/server";
+import { Orders } from "@/backend/models/order.schema";
+import { Products } from "@/backend/models/products.schema";
+const brandColor = "#f59e0b"; // Watawara brand color
 
 const containerStyle = {
-  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
-  backgroundColor: '#f4f4f4',
+  fontFamily:
+    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+  backgroundColor: "#f4f4f4",
 };
 
 const cardStyle = {
-  backgroundColor: '#ffffff',
-  border: '1px solid #e0e0e0',
-  borderRadius: '8px',
-  padding: '15px',
-  maxWidth: '100%',
-  margin: '10px auto',
-  textAlign: 'center',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+  backgroundColor: "#ffffff",
+  border: "1px solid #e0e0e0",
+  borderRadius: "8px",
+  padding: "15px",
+  maxWidth: "100%",
+  margin: "10px auto",
+  textAlign: "center",
+  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
 };
 
 const logoContainerStyle = {
-  marginBottom: '25px',
+  marginBottom: "25px",
 };
 
 const logoStyle = {
-  maxWidth: '150px',
-  height: 'auto',
+  maxWidth: "150px",
+  height: "auto",
 };
 
 const headingStyle = {
-  fontSize: '28px', // Slightly larger heading
-  fontWeight: 'bold',
+  fontSize: "28px", // Slightly larger heading
+  fontWeight: "bold",
   color: brandColor, // Use brand color for main heading
-  marginBottom: '10px',
+  marginBottom: "10px",
 };
 
 const subHeadingStyle = {
-  fontSize: '18px',
-  color: '#333333',
-  marginBottom: '25px',
+  fontSize: "18px",
+  color: "#333333",
+  marginBottom: "25px",
 };
 
 const textStyle = {
-  fontSize: '16px',
-  color: '#555555',
-  lineHeight: '1.6',
-  marginBottom: '15px',
-  textAlign: 'left',
+  fontSize: "16px",
+  color: "#555555",
+  lineHeight: "1.6",
+  marginBottom: "15px",
+  textAlign: "left",
 };
 
 const orderInfoStyle = {
-  backgroundColor: '#f9f9f9',
-  padding: '15px',
-  borderRadius: '6px',
-  marginBottom: '25px',
-  textAlign: 'left',
+  backgroundColor: "#f9f9f9",
+  padding: "15px",
+  borderRadius: "6px",
+  marginBottom: "25px",
+  textAlign: "left",
   borderLeft: `4px solid ${brandColor}`,
 };
 
 const orderInfoLabelStyle = {
-  fontWeight: 'bold',
-  color: '#333333',
+  fontWeight: "bold",
+  color: "#333333",
 };
 
 const itemTableStyle = {
-  width: '100%',
-  borderCollapse: 'collapse',
-  marginBottom: '25px',
-  textAlign: 'left',
+  width: "100%",
+  borderCollapse: "collapse",
+  marginBottom: "25px",
+  textAlign: "left",
 };
 
 const thStyle = {
-  borderBottom: '2px solid #e0e0e0',
-  padding: '10px 8px',
-  color: '#333333',
-  fontWeight: 'bold',
+  borderBottom: "2px solid #e0e0e0",
+  padding: "10px 8px",
+  color: "#333333",
+  fontWeight: "bold",
 };
 
 const tdStyle = {
-  borderBottom: '1px solid #e0e0e0',
-  padding: '12px 8px',
-  color: '#555555',
-  verticalAlign: 'middle', // Align items vertically
+  borderBottom: "1px solid #e0e0e0",
+  padding: "12px 8px",
+  color: "#555555",
+  verticalAlign: "middle", // Align items vertically
 };
 
 const itemImageStyle = {
-  maxWidth: '60px',
-  height: 'auto',
-  marginRight: '10px',
-  borderRadius: '4px',
-  verticalAlign: 'middle',
+  maxWidth: "60px",
+  height: "auto",
+  marginRight: "10px",
+  borderRadius: "4px",
+  verticalAlign: "middle",
 };
 
 const totalRowStyle = {
-  fontWeight: 'bold',
-  color: '#333333',
+  fontWeight: "bold",
+  color: "#333333",
 };
 
 const addressBoxStyle = {
-  border: '1px solid #e0e0e0',
-  padding: '15px',
-  borderRadius: '6px',
-  marginBottom: '20px',
-  textAlign: 'left',
+  border: "1px solid #e0e0e0",
+  padding: "15px",
+  borderRadius: "6px",
+  marginBottom: "20px",
+  textAlign: "left",
 };
 
 const addressTitleStyle = {
-  fontWeight: 'bold',
-  color: '#333333',
-  marginBottom: '8px',
-  borderBottom: '1px solid #eee',
-  paddingBottom: '5px',
+  fontWeight: "bold",
+  color: "#333333",
+  marginBottom: "8px",
+  borderBottom: "1px solid #eee",
+  paddingBottom: "5px",
 };
 
 // Footer Styles (Reused)
 const footerStyle = {
-  marginTop: '40px',
-  paddingTop: '20px',
-  borderTop: '1px solid #eeeeee',
-  fontSize: '12px',
-  color: '#888888',
-  textAlign: 'center',
-  lineHeight: '1.5',
+  marginTop: "40px",
+  paddingTop: "20px",
+  borderTop: "1px solid #eeeeee",
+  fontSize: "12px",
+  color: "#888888",
+  textAlign: "center",
+  lineHeight: "1.5",
 };
 
 const footerLinkStyle = {
-  color: '#555555',
-  textDecoration: 'underline',
-  margin: '0 5px',
+  color: "#555555",
+  textDecoration: "underline",
+  margin: "0 5px",
 };
 
 const mottoStyle = {
-  fontSize: '13px',
-  fontStyle: 'italic',
-  color: '#777777',
-  marginTop: '10px',
+  fontSize: "13px",
+  fontStyle: "italic",
+  color: "#777777",
+  marginTop: "10px",
 };
 
 const copyrightStyle = {
-  marginTop: '15px',
+  marginTop: "15px",
 };
 
 export async function OrderMail({
@@ -157,8 +158,8 @@ export async function OrderMail({
   await dbConnect();
 
   const user = await User.findOne({ email });
-  const order = await Orders.findOne({ userId: user._id, orderId });
-  const products = await Products.find({ });
+  const order = await Orders.findOne({ userId: user?.id, orderId });
+  const products = await Products.find({});
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("en-NG", {

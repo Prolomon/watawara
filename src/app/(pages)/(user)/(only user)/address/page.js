@@ -60,7 +60,7 @@ export default async function Home() {
   try {
     await dbConnect();
     const session = await auth();
-    const user = await User.findOne({ _id: session?.user._id });
+    const user = await User.findOne({ _id: session?.user?.id });
 
     return (
       <div className="w-full mx-auto h-full relative object-fit overflow-hidden mt-4 mb-10">

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'; 
 
-export default function Input ({title, id, name, type, value, required}) { // Added required prop
+export default function Input ({title, id, name, type, value, required, readOnly}) { // Added required prop
     const [error, setError] = useState(''); // State for error message
 
     const validateInput = (currentValue) => {
@@ -61,12 +61,13 @@ export default function Input ({title, id, name, type, value, required}) { // Ad
                 type={type}
                 name={name}
                 id={inputId}
-                className={`w-full rounded-md border ${error ? 'border-red-500' : 'border-gray-400'} outline-none text-gray-800 text-sm mt-1 px-2 py-1.5 bg-transparent outline-amber-400`} // Added focus styles and error border
+                className={`w-full rounded-md border ${error ? 'border-red-500' : 'border-gray-400'} outline-none text-gray-800 text-sm mt-1 px-2 py-1.5 bg-transparent focus:border-amber-400`} // Added focus styles and error border
                 defaultValue={value}
                 onChange={handleChange} // Added onChange handler
                 required={required} // Pass required attribute
                 aria-invalid={!!error} // Accessibility: indicate invalid input
-                aria-describedby={error ? `${inputId}-error` : undefined} // Accessibility: link error message
+                aria-describedby={error ? `${inputId}-error` : undefined}
+                readOnly={readOnly}
             />
             {/* Display error message */}
             {error && (

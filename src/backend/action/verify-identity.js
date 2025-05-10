@@ -19,19 +19,19 @@ export const verifyIdentity = async (formData) => {
 
   // Get user session
   const session = await auth();
-  if (!session?.user?._id) {
+  if (!session?.user?.id) {
     redirect("/auth/login");
     return; // Terminate execution
   }
 
   // Fetch user and convert to plain object
-  const user = await User.findById(session.user._id).lean();
+  const user = await User.findById(session.user?.id).lean();
   if (!user) {
     redirect("/auth/login");
     return; // Terminate execution
   }
 
-  const walletExist = await Wallet.findOne({ userId: session.user._id }).lean();
+  const walletExist = await Wallet.findOne({ userId: session.user?.id }).lean();
   if (walletExist) {
     redirect("/wallet");
     return; // Terminate execution
@@ -45,7 +45,7 @@ export const verifyIdentity = async (formData) => {
 
   // Update wallet and convert to plain object
   await Wallet.create(
-    { userId: session.user._id }, // Query by userId
+    { userId: session.user?.id }, // Query by userId
     { $set: { idType, idNumber, isActive: true, isVerified: true } }, // Update fields
     {
       new: true,
@@ -55,7 +55,7 @@ export const verifyIdentity = async (formData) => {
   ).lean(); // Convert result to plain object
 
   await User.findByIdAndUpdate(
-    { _id: session.user._id },
+    { _id: session.user?.id },
     { $set: { dob } },
     {
       new: true,

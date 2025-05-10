@@ -10,7 +10,7 @@ export const addAddress = async (formData) => {
 
   // Get user session?
   const session = await auth();
-  if (!session?.user?._id) {
+  if (!session?.user?.id) {
     throw new Error("User not authenticated");
   }
 
@@ -22,7 +22,7 @@ export const addAddress = async (formData) => {
     postalCode: formData.get("postal"),
     address: formData.get("address"),
   };
-  const id = session?.user._id;
+  const id = session?.user?.id;
 
   // Update user with timeout settings
   const result = await User.findByIdAndUpdate(

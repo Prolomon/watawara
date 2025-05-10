@@ -13,7 +13,7 @@ export default async function Checkout() {
   await dbConnect()
   const session = await auth();
   const stored = (await cookies()).get("wata_delivery") || 0;
-  const user = await User.findOne({_id: session.user._id})
+  const user = await User.findOne({ email: session?.user?.email})
 
   if (!user || !session) {
     redirect("/auth/login");

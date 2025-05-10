@@ -76,7 +76,7 @@ export default async function Home() {
           <Preference />
           <SwitchAccount />
           <Logout />
-          <DeleteAccount />
+          {/* <DeleteAccount /> */}
         </section>
       </div>
     );
