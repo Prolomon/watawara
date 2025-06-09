@@ -31,5 +31,15 @@ const ordersSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-export const Orders =
-  mongoose.models.Orders || mongoose.model("Orders", ordersSchema);
+
+  let Orders;
+if (mongoose && mongoose.models && mongoose.models.Orders) {
+Orders = mongoose.models.Orders;
+} else if (mongoose) {
+Orders = mongoose.model("Orders", ordersSchema);
+} else {
+  console.error("Mongoose is not available to define the orders model.");
+  throw new Error("Mongoose instance is required to define the orders model.");
+}
+
+export { Orders };

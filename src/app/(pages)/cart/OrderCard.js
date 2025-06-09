@@ -4,38 +4,30 @@ import Currency from "@/utilities/currency/Currency";
 import AddCheckout from "./AddCheckout";
 import { dbConnect } from "@/backend/server/server";
 import ActionButton from "./ActionButton";
+import { Products } from "@/backend/models/products.schema";
 
 export default async function OrderCard({ productId, quantity, color, size }) {
   try {
     await dbConnect();
 
-    const allProducts = await fetch(
-      `${process.env.WATAWARA_BASE_URL}/api/products`
-    );
-
-    if (!allProducts.ok) {
-      throw new Error(`Failed to fetch products: ${allProducts.status}`);
-    }
-
-    const p = await allProducts.json();
-    const product = p.find((i) => i.id === productId);
+    const product = await Products.findOne({id: productId}, { _id: 0 });
 
     return (
       <li className="w-full h-auto max-md:h-auto rounded-md border border-gray-200 relative mb-2.5">
         {/* product name, quantity and brand */}
         <div className="flex gap-2 p-3 h-[7.5rem] max-md:h-auto">
           <Link
-            href={`/category/${product.category?.replace(
+            href={`/category/${product?.category?.replace(
               /\s+/g,
               "-"
-            )}/product/${product.name?.replace(/\s+/g, "-")}`}
+            )}/product/${product?.name?.replace(/\s+/g, "-")}`}
           >
             <Image
               className="aspect-square w-auto h-full border border-gray-300 rounded-md"
               alt="order id"
               width={100}
               height={100}
-              src={product.images[0]}
+              src={product?.images[0]}
             />
           </Link>
           <div className="w-full flex flex-col place-content-between">

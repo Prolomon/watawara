@@ -9,7 +9,11 @@ export default async function Description({
   discount,
   reviews,
   brand,
-  images,
+  material,
+  colors,
+  tags,
+  stock,
+  size,
 }) {
   const rate = reviews.reduce((acc, r) => acc + Number(r.rating), 0);
   const rating = rate / reviews.length / 5;
@@ -23,8 +27,8 @@ export default async function Description({
           {discount.type === "percentage"
             ? Currency(((100 - discount.amount) * price) / 100)
             : discount.type === "none"
-            ? Currency(price)
-            : Currency(price - discount.amount)}
+              ? Currency(price)
+              : Currency(price - discount.amount)}
         </h1>
         <span className="text-base text-gray-400 line-through">
           {discount.type === "none" ? null : Currency(price)}
@@ -33,13 +37,23 @@ export default async function Description({
           {discount.type === "percentage"
             ? discount.amount + "%"
             : discount.type === "none"
-            ? null
-            : Currency(discount.amount)}
+              ? null
+              : Currency(discount.amount)}
         </span>
       </div>
-      <button className="text-white bg-green-700 rounded-sm shadow-sm text-[12px] px-1.5 py-[0.15rem] border-none outline-none cursor-pointer">
-        {brand}
-      </button>
+      <div className="flex gap-2">
+        <button className="text-white bg-green-700 rounded-sm shadow-sm text-xs px-1.5 py-[0.15rem] border-none outline-none cursor-pointer">
+          {brand}
+        </button>
+        {tags?.map((_) => (
+          <button
+            key={_}
+            className="text-white bg-green-700 rounded-sm shadow-sm text-xs px-1.5 py-[0.15rem] border-none outline-none cursor-pointer capitalize"
+          >
+            {_}
+          </button>
+        ))}
+      </div>
       {/* rating */}
       <div className="-ml-2.5 flex gap-2 items-center justify-start">
         <Rating rating={rating} size={24} />
@@ -50,7 +64,13 @@ export default async function Description({
         </span>
       </div>
       {/* section for selecting products color */}
-      <ProductData images={images} id={id} />
+      <ProductData
+        colors={colors}
+        material={material}
+        stock={stock}
+        size={size}
+        id={id}
+      />
     </div>
   );
 }

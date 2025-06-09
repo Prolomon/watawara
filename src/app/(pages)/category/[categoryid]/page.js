@@ -1,9 +1,9 @@
 "use server";
-import Product from "./_product/Product";
 import { dbConnect } from "@/backend/server/server";
 import { images } from "@/constants";
 import { Products } from "@/backend/models/products.schema";
 import Sidebar from "./Sidebar";
+import Product from "@/components/product/Product";
 
 export async function generateMetadata({ params }) {
   // read route params

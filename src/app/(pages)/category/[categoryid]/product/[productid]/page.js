@@ -9,7 +9,7 @@ import SimilarProducts from "./SimilarProducts";
 import Specification from "./Specification";
 import ReviewChart from "@/utilities/review/ReviewChart";
 import Safety from "./Safety";
-import { dbConnect } from "@/backend/server/server";
+import Breadcrumbs from "./BreadCrums";
 
 export async function generateMetadata({ params }) {
   const { productid } = await params;
@@ -91,7 +91,6 @@ export async function generateMetadata({ params }) {
 export default async function Home({ params }) {
   try {
     const { productid } = await params;
-    await dbConnect();
 
     const ps = await fetch(
       `${process.env.WATAWARA_BASE_URL}/api/products/${productid}`
@@ -107,8 +106,9 @@ export default async function Home({ params }) {
     const rating = rate / product.reviews.length / 5;
 
     return (
-      <div className="w-11/12 max-md:w-full mx-auto h-full relative object-fit overflow-hidden mt-4 mb-10">
-        <div className="w-full flex max-md:flex-col gap-3">
+      <div className="w-11/12 max-md:w-full mx-auto h-full relative object-fit overflow-hidden mt-4 mb-5">
+        <Breadcrumbs category={product.category} subcategory={product.subCategory} product={product.name} />
+        <div className="w-full max-md:w-11/12 flex max-md:flex-col gap-3">
           <div className="w-9/12 max-md:w-full max-md:mb-3">
             {/* product gallery and product details */}
             <div className="flex w-full max-md:w-full max-md:flex-col">
@@ -117,8 +117,17 @@ export default async function Home({ params }) {
             </div>
             {/* product description and product specification */}
             <div>
-              <ProductDescription {...product} />
+              <ProductDescription
+                body={product.description}
+                title="description"
+              />
               <Specification {...product} />
+              {product?.content && (
+                <ProductDescription
+                  body={product?.content}
+                  title="what in the box?"
+                />
+              )}
             </div>
           </div>
           <div className="w-3/12 max-md:w-full">
@@ -127,7 +136,7 @@ export default async function Home({ params }) {
           </div>
         </div>
         {/* customers review section */}
-        <div className="w-full flex gap-8 py-8 max-md:flex-col">
+        <div className="w-full max-md:w-11/12 flex gap-8 py-8 max-md:flex-col">
           <div className="w-4/12 max-md:w-full">
             <h4 className="text-slate-900 font-bold text-lg">
               Customer&apos;s Review

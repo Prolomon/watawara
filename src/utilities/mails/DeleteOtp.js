@@ -132,10 +132,12 @@ export async function DeleteOtp({
 
         {/* Updated Body Text for Account Deletion */}
         <p style={textStyle}>
-          We received a request to delete your Watawara account associated with this email address.
+          We received a request to delete your Watawara account associated with
+          this email address.
         </p>
         <p style={textStyle}>
-          To confirm this action and permanently delete your account, please use the One-Time Password (OTP) below.
+          To confirm this action and permanently delete your account, please use
+          the One-Time Password (OTP) below.
         </p>
 
         {/* OTP Section */}
@@ -147,13 +149,17 @@ export async function DeleteOtp({
 
         {/* Updated Instructions */}
         <p style={textStyle}>
-          Enter this code on the account deletion confirmation page. This code is valid for a limited time.
+          Enter this code on the account deletion confirmation page. This code
+          is valid for a limited time.
         </p>
         <p style={textStyle}>
-          <strong>Warning:</strong> Proceeding with this code will permanently delete your account and all associated data. This action cannot be undone.
+          <strong>Warning:</strong> Proceeding with this code will permanently
+          delete your account and all associated data. This action cannot be
+          undone.
         </p>
         <p style={textStyle}>
-          If you did not request this account deletion, please ignore this email or contact our support immediately. Your account remains safe.
+          If you did not request this account deletion, please ignore this email
+          or contact our support immediately. Your account remains safe.
         </p>
 
         {/* Footer (Reused) */}

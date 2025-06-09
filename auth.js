@@ -1,4 +1,4 @@
-import NextAuth, { CredentialsSignin } from "next-auth";
+import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import { User } from "@/backend/models/user.schema";
@@ -6,8 +6,6 @@ import { compare } from "bcryptjs";
 import { dbConnect } from "@/backend/server/server";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  trustHost: true,
-  trustedOrigins: ["http://localhost:3000", "https://watawara.vercel.app"],
   providers: [
     Credentials({
       name: "Credentials",
@@ -17,157 +15,120 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       async authorize(credentials) {
         try {
-          const email = credentials?.email;
-          const password = credentials?.password;
+          const { email, password } = credentials ?? {};
 
           if (!email || !password) {
-            throw new CredentialsSignin("Email and password are required");
+            throw new Error("Email and password are required");
           }
 
           await dbConnect();
 
-          // Find user with password for verification
-          const userWithPassword = await User.findOne({ email })
+          // Single database query with password selection
+          const user = await User.findOne({ email })
             .select("+password")
             .lean()
             .exec();
 
-          if (!userWithPassword || !userWithPassword.password) {
-            throw new CredentialsSignin("Invalid credentials");
-          }
-
-          const isMatch = await compare(password, userWithPassword.password);
-          if (!isMatch) {
-            throw new CredentialsSignin("Invalid credentials");
-          }
-
-          // Return user object without password
-          const user = await User.findOne({ email })
-            .select("-password")
-            .lean()
-            .exec();
-
-          // Add status checks here
           if (!user) {
-            throw new CredentialsSignin("User not found after verification.");
+            throw new Error("No user found with this email");
           }
 
-          if (user.status === "inactive") {
-            throw new CredentialsSignin("Account inactive"); // Throw error for inactive status
+          if (!user.password) {
+            throw new Error("User has no password set");
           }
 
-          if (user.status === "ban") {
-            throw new CredentialsSignin("Account banned"); // Throw error for banned status
+          const isMatch = await compare(password, user.password);
+          if (!isMatch) {
+            throw new Error("Incorrect password");
           }
 
-          const sessionUser = {
-            id: user?.id.toString(),
+          return {
+            id: user._id.toString(),
             email: user.email,
             role: user.role,
             status: user.status,
           };
-
-          return sessionUser;
-        } catch (error) {}
+        } catch (error) {
+          console.error("Authorization error:", error);
+          throw error; // Let NextAuth handle the error
+        }
       },
     }),
     Google,
   ],
   pages: {
     signIn: "/auth/login",
+    error: "/auth/error",
   },
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.user = {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+          status: user.status,
+          ...user,
+        };
+      }
+      return token;
+    },
     async session({ session, token }) {
-      if (token) {
-        // Initialize session?.user if it doesn't exist
-        if (!session?.user) {
-          session.user = {};
-        }
-
-        // Copy all user data from token
-        if (token.user) {
-          session.user = { ...token.user };
-        }
-
-        // Set additional properties
-        if (token.sub) {
-          session.user.id = token.sub;
-        }
-        if (token.role) {
-          session.user.role = token.role;
-        }
+      if (token?.user) {
+        session.user = token.user;
       }
       return session;
     },
-    async jwt({ token, user }) {
-      if (user) {
-        // Fetch full user data from the database
-        await dbConnect();
-        const dbUser = await User.findOne({ email: user.email }).lean().exec();
-
-        if (dbUser) {
-          token.user = dbUser;
-        }
-      }
-
-      return token;
-    },
-    signIn: async ({ user, account }) => {
+    async signIn({ user, account }) {
       if (account?.provider === "google") {
         try {
-          const accessToken = account.access_token;
+          const { access_token } = account;
 
-          // Fetch additional user data using Google People API
+          // Fetch additional Google user data
           const response = await fetch(
             "https://people.googleapis.com/v1/people/me?personFields=genders,phoneNumbers,birthdays",
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
+            { headers: { Authorization: `Bearer ${access_token}` } }
           );
-          const googleData = await response.json();
 
-          // Extract date of birth
-          const dateOfBirth = googleData.birthdays?.[0]?.date || null; // Get date of birth
+          if (!response.ok) {
+            console.error("Google People API error:", await response.text());
+            return true;
+          }
+
+          const googleData = await response.json();
+          const dateOfBirth = googleData.birthdays?.[0]?.date;
           const formattedDOB = dateOfBirth
             ? `${dateOfBirth.year}-${dateOfBirth.month}-${dateOfBirth.day}`
             : null;
 
-          const gender = googleData.genders?.[0]?.value || null; // Get gender
-          const phoneNumber = googleData.phoneNumbers?.[0]?.value || null; // Get phone number
-
           await dbConnect();
 
-          const alreadyUser = await User.findOne({ email: user.email })
-            .lean()
-            .exec();
+          const existingUser = await User.findOne({ email: user.email });
 
-          if (!alreadyUser) {
+          if (!existingUser) {
             await User.create({
               email: user.email,
-              fullname: user.name.toLowerCase(),
-              avatar: user.picture,
-              gender: gender, // Save gender
-              phoneNo: phoneNumber, // Save phone number
+              fullname: user.name?.toLowerCase(),
+              avatar: user.image,
+              gender: googleData.genders?.[0]?.value,
+              phoneNo: googleData.phoneNumbers?.[0]?.value,
               authProviderId: user.id,
               dob: formattedDOB,
+              provider: "google",
             });
           }
-
-          return true; // Return existing user
         } catch (error) {
-          throw new Error("Error fetching additional user data:", error);
+          console.error("Google sign-in processing error:", error);
+          return false; // Prevent sign in if there's an error
         }
       }
-      return true; // Return existing user
+      return true;
     },
   },
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  // Add performance optimizations
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === "production",
+  debug: process.env.NODE_ENV === "development",
 });

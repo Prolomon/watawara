@@ -1,4 +1,3 @@
-import EditProfile from "./EditProfile";
 import Country from "./Country";
 import Currencies from "./Currency";
 import Language from "./Language";
@@ -69,7 +68,6 @@ export default async function Home() {
     return (
       <div className="w-full mx-auto h-full relative object-fit overflow-hidden mt-4 mb-10">
         <section className="grid gap-2">
-          <EditProfile />
           <Country curCountry={user?.country} />
           <Currencies curCurrency={user?.currency} />
           <Language curLanguage={user?.language} />

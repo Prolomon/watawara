@@ -46,8 +46,7 @@ export const checkRedirect = async (subTotal, tax, shipping, total) => {
 };
 
 export const add2Checkout = async (productId, quantity, color, size) => {
-  // Get form data
-  // const productId 
+
   const session = await auth();
   const userId = session?.user?.id;
 
@@ -71,6 +70,10 @@ export const add2Checkout = async (productId, quantity, color, size) => {
     },
     { new: true }
   );
+  return {
+    success: true,
+    message: "Product added to checkout",
+  };
 };
 
 export const checkoutNow = async (quantity, id, color, size) => {

@@ -39,3 +39,26 @@ export const wishlist = async (id) => {
     `${process.env.NEXT_PUBLIC_WATAWARA_BASE_URL}/cart/wishlist?message=wish`
   );
 };
+
+export const removeWishlist = async (id) => {
+  // Get form data
+  const session = await auth();
+  const email = session?.user?.email;
+  const productId = id;
+
+  await dbConnect();
+
+  const user = await User.findOne({ email });
+
+  if (!session ||!user) {
+    redirect("/auth/login");
+  }
+  await User.updateOne(
+    { email },
+    {
+      $pull: {
+        wishlist: { productId },
+      }
+    }
+  )
+}

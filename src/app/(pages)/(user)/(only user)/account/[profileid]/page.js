@@ -15,8 +15,8 @@ export async function generateMetadata({  }) {
 
   return {
     metadataBase: new URL("https://watawara.vercel.app/"),
-    title: user.fullname.toUpperCase(),
-    description: user.fullname.toUpperCase(),
+    title: user.fullname?.toUpperCase(),
+    description: user.fullname?.toUpperCase(),
     icons: {
       icon: images.logo,
       shortcut: images.logo,
@@ -28,9 +28,9 @@ export async function generateMetadata({  }) {
     },
     manifest: "/manifest.json",
     openGraph: {
-      title: user.fullname.toUpperCase(),
-      description: user.fullname.toUpperCase(),
-      url: `${process.env.NEXT_PUBLIC_WATAWARA_BASE_URL}/${user.fullname.toUpperCase()
+      title: user.fullname?.toUpperCase(),
+      description: user.fullname?.toUpperCase(),
+      url: `${process.env.NEXT_PUBLIC_WATAWARA_BASE_URL}/${user.fullname?.toUpperCase()
         ?.toLowerCase()
         .replace(/\s+/g, "-")}`,
       siteName: "Watawara",
@@ -44,7 +44,7 @@ export async function generateMetadata({  }) {
           url: images.openGraph, // Must be an absolute URL
           width: 1800,
           height: 1600,
-          alt: user.fullname.toUpperCase(),
+          alt: user.fullname?.toUpperCase(),
         },
       ],
       locale: "en_NG",
@@ -52,14 +52,14 @@ export async function generateMetadata({  }) {
     },
     twitter: {
       card: "summary_large_image",
-      title: user.fullname.toUpperCase(),
-      description: user.fullname.toUpperCase(),
-      siteId: user.fullname.toUpperCase(),
+      title: user.fullname?.toUpperCase(),
+      description: user.fullname?.toUpperCase(),
+      siteId: user.fullname?.toUpperCase(),
       creator: "Tri3G Innovative Limited",
-      creatorId: user.fullname.toUpperCase(),
+      creatorId: user.fullname?.toUpperCase(),
       images: {
         url: images.openGraph,
-        alt: user.fullname.toUpperCase(),
+        alt: user.fullname?.toUpperCase(),
       },
       // app: {
       //   name: "Watawara",

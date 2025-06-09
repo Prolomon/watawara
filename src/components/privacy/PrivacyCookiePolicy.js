@@ -21,16 +21,16 @@ const PrivacyCookiePolicy = () => {
     <>
       {show ? (
         <div
-          className={`max-w-xl p-4 max-md:w-full bg-white rounded-lg sticky left-4 top-4 z-[9999] border border-gray-300 shadow-sm`}
+          className={`max-w-xl p-4 max-md:w-full bg-white rounded-lg fixed left-4 bottom-4 z-[999999] border border-gray-300 shadow-sm`}
         >
           <h1 className="text-xl font-bold mb-2">Privacy & Cookie Policy</h1>
           <p className="mb-2 text-sm">
             We use cookies to enhance your experience with us. By clicking &apos;Accept All&apos;, you agree to our use of cookies. For details, see our{" "}
-            <a href="/privacy-policy" className="underline text-blue-600">
+            <a href="/w/privacy-policy" className="underline text-blue-600">
               Privacy Policy
             </a>{" "}
             and{" "}
-            <a href="/cookie-policy" className="underline text-blue-600">
+            <a href="/w/cookie-policy" className="underline text-blue-600">
               Cookie Policy
             </a>.
           </p>

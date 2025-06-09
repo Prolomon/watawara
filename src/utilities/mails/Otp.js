@@ -50,6 +50,20 @@ const textStyle = {
   marginBottom: "15px",
   textAlign: "left", // Align text left for readability
 };
+const buttonStyle = {
+  backgroundColor: brandColor,
+  color: "#ffffff",
+  padding: "12px 24px",
+  borderRadius: "6px",
+  border: "none",
+  fontSize: "16px",
+  fontWeight: "bold",
+  cursor: "pointer",
+  textDecoration: "none",
+  display: "inline-block",
+  marginTop: "20px",
+  marginBottom: "20px",
+};
 
 const otpContainerStyle = {
   margin: "30px 0",
@@ -146,6 +160,16 @@ export async function Otp({
           Enter this code on the password reset page. This code is valid for a
           limited time.
         </p>
+
+        <a
+          href={websiteUrl + "auth/otp?email=" + email}
+          style={buttonStyle}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Reset Your Password
+        </a>
+
         <p style={textStyle}>
           If you did not request a password reset, please ignore this email or
           contact our support if you have concerns. Your account remains secure.

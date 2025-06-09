@@ -1,59 +1,49 @@
 "use client";
-import Color from "./Color";
-// import Quantity from "./Quantity"
+import Preference from "./Preference";
 import { add2Cart } from "@/backend/action/cart";
 import MoreOpt from "./MoreOpt";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Minus, Plus } from "lucide-react";
 import { checkoutNow } from "@/backend/action/checkout";
-import { useState, useEffect } from "react";
-import Popover from "./Popover";
+import { useState} from "react";
 
-export default function ProductData({ images, id }) {
-  const [quantity, setQuantity] = useState(1);
-  const router = useRouter();
-  const pathname = usePathname();
-  const search = useSearchParams();
-  const [showPopover, setShowPopover] = useState(false);
+export default function ProductData({ colors, id, material, stock, size }) {
+  const [quant, setQuant] = useState(1);
+  const [value, setValue] = useState("Add to cart");
 
   const decre = () => {
-    if (quantity >= 2) {
-      setQuantity(quantity - 1);
+    if (quant >= 2) {
+      setQuant(quant - 1);
     } else {
-      setQuantity(1);
+      setQuant(1);
     }
   };
   const incre = () => {
-    setQuantity(quantity + 1);
-  };
-
-  const handleCart = () => {
-    add2Cart(quantity, id);
-
-    router.push(`${pathname}?cart=${id}`);
-  };
-
-  useEffect(() => {
-    if (search.get("cart") === id) {
-      setShowPopover(true);
-      const timer = setTimeout(() => {
-        setShowPopover(false);
-      }, 5000);
-
-      return () => clearTimeout(timer);
+    if (quant === stock) {
+      setQuant(stock);
+    } else {
+      setQuant(quant + 1);
     }
-  }, [id, search]);
+  };
+
+  const handleCart = async () => {
+
+    const result = await add2Cart(quant, id);
+
+    if (!result.success) {
+      setValue(result.message);
+    }
+
+    setValue(result.message);
+  };
+
 
   return (
     <>
-      <Color images={images} />
-      {showPopover && <Popover />}
-      {/* section for quantity, share, wishlist */}
+      <Preference colors={colors} material={material} size={size} />
+      {/* section for quant, share, wishlist */}
       <div className="w-full items-end flex gap-3 pt-2">
         <div className="w-full">
-          <h5 className="text-gray-800 text-base font-semibold mb-2">
-            Quantity
-          </h5>
+          <h5 className="text-gray-800 text-base font-semibold mb-2">Quant</h5>
           <div className="w-full flex gap-2 border border-gray-200 p-1 rounded-md">
             <button
               type="button"
@@ -65,9 +55,9 @@ export default function ProductData({ images, id }) {
             <input
               type="text"
               className="rounded-md text-center px-2.5 w-full py-1 text-gray-800"
-              name="quantity"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
+              name="quant"
+              value={quant}
+              onChange={(e) => setQuant(e.target.value)}
             />
             <button
               type="button"
@@ -80,15 +70,15 @@ export default function ProductData({ images, id }) {
         </div>
         <button
           onClick={handleCart}
-          className="text-base font-semibold block border w-full py-1.5 border-gray-400 text-gray-700 rounded-md"
+          className="text-sm font-semibold block border w-full py-2 border-gray-400 text-gray-700 rounded-md"
         >
-          Add to cart
+          {value}
         </button>
       </div>
       <div className="flex gap-3 mt-2">
         <button
-          onClick={() => checkoutNow(quantity, id)}
-          className="text-base font-semibold block text-gray-800 w-full py-1.5 bg-primary rounded-md hover:bg-secondary"
+          onClick={() => checkoutNow(quant, id)}
+          className="text-sm font-semibold block text-gray-800 w-full py-1.5 bg-primary rounded-md hover:bg-secondary"
         >
           Buy Now
         </button>

@@ -39,6 +39,9 @@ const nextConfig = {
       bodySizeLimit: "10mb", // Increase the limit (e.g., 10MB)
     },
   },
+  env: {
+    WATAWARA_BASE_URL: process.env.WATAWARA_BASE_URL,
+  },
 };
 
 export default nextConfig;

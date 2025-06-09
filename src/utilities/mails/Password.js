@@ -119,7 +119,7 @@ export async function Password({
           </a>{" "}
           or visit our Help Center, as your account security may be compromised.
         </p>
-
+    
         {/* Footer */}
         <div style={footerStyle}>
           <div>

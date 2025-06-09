@@ -5,7 +5,6 @@ import getClientInfo from '../currency/getClientInfo';
 
 const brandColor = "#f59e0b"; // Watawara brand color
 
-
 const containerStyle = {
   fontFamily:
     '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
@@ -41,7 +40,7 @@ const headingStyle = {
 
 const subHeadingStyle = {
   fontSize: "18px",
-  color: brandColor, // Use brand color for sub-heading
+  color: brandColor,
   marginBottom: "25px",
 };
 
@@ -65,6 +64,21 @@ const detailBoxStyle = {
 const detailLabelStyle = {
     fontWeight: 'bold',
     color: '#333333',
+};
+
+const buttonStyle = {
+  backgroundColor: brandColor,
+  color: '#ffffff',
+  padding: '12px 24px',
+  borderRadius: '6px',
+  border: 'none',
+  fontSize: '16px',
+  fontWeight: 'bold',
+  cursor: 'pointer',
+  textDecoration: 'none',
+  display: 'inline-block',
+  marginTop: '20px',
+  marginBottom: '20px',
 };
 
 const footerStyle = {
@@ -94,10 +108,10 @@ const copyrightStyle = {
   marginTop: "15px",
 };
 
-export async function Login({ // Named export for the new component
+export async function Login({
   email,
   logoUrl = "https://gonf7za2h5pl262h.public.blob.vercel-storage.com/archive/long-o33wF29ES14EXO9L1weotcHCURRykJ.png",
-  websiteUrl = process.env.WATAWARA_BASE_URL || 'https://watawara.vercel.app',
+  websiteUrl = process.env.WATAWARA_BASE_URL,
   privacyUrl = "#",
   helpUrl = "#",
   unsubscribeUrl = "#",
@@ -145,8 +159,16 @@ export async function Login({ // Named export for the new component
             <li>Contact our support team via the Help Center if you need assistance.</li>
         </ul>
 
+        <a 
+          href={websiteUrl}
+          style={buttonStyle}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Visit Watawara Website
+        </a>
+
         <div style={footerStyle}>
-          {/* ... existing footer code ... */}
           <div>
             <a
               href={websiteUrl}

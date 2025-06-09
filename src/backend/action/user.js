@@ -11,47 +11,118 @@ import { hash, compare } from "bcryptjs";
 import { Mailer } from "../mailer";
 import { Otp } from "@/utilities/currency/Otp";
 import { cookies } from "next/headers";
+import { SignJWT, jwtVerify } from "jose";
+
+// export async function login(formData) {
+//   try {
+//     const email = formData.get("email");
+//     const password = formData.get("password");
+//     // await Mailer(email, "login");
+
+//     // Fixed syntax error: removed the extra '{'
+//     const result = await signIn("credentials", {
+//       email,
+//       password,
+//       redirect: false,
+//     });
+
+//     // Return the result object from signIn (contains ok: true on success)
+//     return result;
+
+//   } catch (error) {
+//     // Catch AuthErrors thrown by signIn on failure
+//     if (error instanceof AuthError) {
+//       // Log the error on the server for debugging
+//       console.error("AuthError during login:", error);
+//       // Return the error type to the client
+//       return { error: error.type || "AuthError" };
+//     }
+//     // Catch any other unexpected errors
+//     console.error("Unexpected server action login error:", error);
+//     return { error: "An unexpected server error occurred." };
+//   }
+// }
+
+const secret = new TextEncoder().encode(process.env.JWT_SECRET || "");
 
 export async function login(formData) {
   try {
+    await dbConnect();
     const email = formData.get("email");
     const password = formData.get("password");
 
+    console.log(email, password);
+
     if (!email || !password) {
-      return { error: "Email and password are required." };
+      return {
+        success: false,
+        message: "User Email and Password needed to authenticate.",
+      };
     }
-    await Mailer(email, "login");
 
-    // await cookies.set("_watawara_otp", await hashPassword(Otp(), 12), {
-    //   expires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes expiry
-    // });
+    const user = await User.findOne({ email });
 
-    await signIn("credentials", {
-      email,
-      password,
-      redirect: false, // Prevent NextAuth from automatically redirecting on error
+    if (!user) {
+      return {
+        success: false,
+        message: "Invalid user Email and Password provided to authenticate.",
+      };
+    }
+
+    // The compare function needs to be awaited as it returns a Promise
+    const isMatch = await compare(password, user.password);
+
+    if (!isMatch) {
+      return {
+        success: false,
+        message: "Invalid user Email and Password provided to authenticate.",
+      };
+    }
+
+    // Ensure JWT_SECRET is not empty
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is not configured");
+    }
+
+    const jwt = await new SignJWT({
+      id: user._id.toString(), // Convert ObjectId to string
+      email: user.email,
+      role: user.role,
+    })
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt() // Add issued at time
+      .setExpirationTime("7d")
+      .sign(secret);
+
+    const cookieStore = cookies();
+    cookieStore.set("auth.watawara.session", jwt, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7, // 7 days in seconds
     });
 
-    return { success: true };
+    // if (user.status === "inactive") {
+    //   return {
+    //     success: false,
+    //     message: "User account is not active. Please activate your account.",
+    //   };
+    // }
+
+    return {
+      success: true,
+      message: "User authentication successful.",
+    };
   } catch (error) {
-    // Catch specific NextAuth errors
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          // error.message should contain the specific message from authorize
-          return { error: error.message || "Invalid email or password." };
-        // Add cases for other AuthError types if needed
-        default:
-          console.error("Auth Error:", error);
-          return { error: "An authentication error occurred." };
-      }
-    } else {
-      // Handle non-AuthError errors
-      console.error("Login Action Error:", error);
-      return { error: "An unexpected server error occurred." };
-    }
+    console.error("Login error:", error);
+    return {
+      success: false,
+      message: error.message,
+    };
   }
 }
+
 
 export const logout = async () => {
   // Use the server-side signOut from auth.js
@@ -190,7 +261,7 @@ export const createAccount = async (formData) => {
   await dbConnect();
   const existingUser = await User.findOne({ email });
   if (existingUser) redirect("/auth/signup?message=email-exists");
-  const saltRounds = 10;
+  const saltRounds = 16;
   const hashPassword = await hash(password, saltRounds);
   const otp = await Otp();
   await cookies().set("_watawara_otp", await hash(String(otp), 10), {

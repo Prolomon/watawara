@@ -150,7 +150,7 @@ export async function OrderMail({
   orderId,
   shippingAddress = {}, // Default to empty object
   logoUrl = "https://gonf7za2h5pl262h.public.blob.vercel-storage.com/archive/long-o33wF29ES14EXO9L1weotcHCURRykJ.png",
-  websiteUrl = "https://watawara.vercel.app",
+  websiteUrl = process.env.WATAWARA_BASE_URL,
   privacyUrl = "#",
   helpUrl = "#",
   unsubscribeUrl = "#",

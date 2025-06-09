@@ -1,13 +1,9 @@
 "use client"
 import { add2Checkout } from "@/backend/action/checkout";
-import { useRouter } from "next/navigation";
 
 export default function AddCheckout({ productId, quantity, color, size, price, name }) {
-  const router = useRouter()
-  const handleClick = () => {
-    add2Checkout(productId, quantity, color, size, price);
-
-    router.push(`/cart?checkout=${productId}`);
+  const handleClick = async () => {
+      await add2Checkout(productId, quantity, color, size, price);
   };
 
   return (

@@ -4,6 +4,7 @@ import { User } from "@/backend/models/user.schema";
 import { auth } from "../../../../../../../auth";
 import { dbConnect } from "@/backend/server/server";
 import { Orders } from "@/backend/models/order.schema";
+import EditProfile from "./EditProfile";
 
 export default async function Profile() {
   await dbConnect();
@@ -13,7 +14,7 @@ export default async function Profile() {
   const user = await User.findOne({ email: session?.user?.email });
 
   return (
-    <form className="">
+    <div className="">
       <h3 className="text-lg font-semibold text-gray-700 text-left">
         My Profile
       </h3>
@@ -65,8 +66,9 @@ export default async function Profile() {
           </div>
         </div>
       </div>
+      <EditProfile user={user} />
       <div className="mt-6">
-        <h3 className="text-md font-semibold">Wallets Information</h3>
+        <h3 className="text-md font-semibold">Wallets Information&apos;s</h3>
         {/* <div className="grid gap-x-3 grid-cols-2 max-md:grid-cols-1 mt-2">
                     <Input type={`email`} title="email" name="email" defaultValue={user.email} />
                     <Input type={`text`} title="phone no" name="phoneNo" defaultValue={user.phoneNo} />
@@ -74,6 +76,6 @@ export default async function Profile() {
                     <Input type={`text`} title="Gender" name="gender" defaultValue={user.gender} />
                 </div> */}
       </div>
-    </form>
+    </div>
   );
 }

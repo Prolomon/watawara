@@ -72,8 +72,14 @@ export default async function Home({ searchParams }) {
             </Link>
           </p>
           <p className="text-gray-600 text-sm text-center mt-3">
-            By continuing you have agreed to our Privacy Policy and our Terms
-            and Conditions.
+            By continuing you have agreed to our{" "}
+            <Link href={`/w/privacy-policy`} className="hover:underline">
+              Privacy Policy
+            </Link>{" "}
+            and our{" "}
+            <Link href={`/w/terms-and-conditions`} className="hover:underline">
+              Terms and Conditions.
+            </Link>
           </p>
         </div>
       </div>

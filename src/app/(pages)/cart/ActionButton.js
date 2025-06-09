@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 
 export default function ActionButton({ id }) {
   const router = useRouter();
-  const handleDelete = () => {
-    delete4cart(id);
+  const handleDelete = async () => {
+    await delete4cart(id);
     router.push(`/cart?delete=true`);
   };
 

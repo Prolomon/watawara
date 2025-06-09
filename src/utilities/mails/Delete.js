@@ -85,16 +85,16 @@ const copyrightStyle = {
 export async function Deleted({
   email,
   logoUrl = "https://gonf7za2h5pl262h.public.blob.vercel-storage.com/archive/long-o33wF29ES14EXO9L1weotcHCURRykJ.png",
-  websiteUrl = process.env.WATAWARA_BASE_URL || "https://watawara.vercel.app",
+  websiteUrl = process.env.WATAWARA_BASE_URL,
   privacyUrl = "#",
   helpUrl = "#",
 }) {
-    await dbConnect();
-    const user = await User.findOne({ email });
-    if (!user) {
-      console.error(`User not found for email: ${email} in Login template`);
-      return null;
-    }
+  await dbConnect();
+  const user = await User.findOne({ email });
+  if (!user) {
+    console.error(`User not found for email: ${email} in Login template`);
+    return null;
+  }
   return (
     <div style={containerStyle}>
       <div style={cardStyle}>
@@ -109,12 +109,22 @@ export async function Deleted({
         </h2>
 
         <p style={textStyle}>
-          This email confirms that your Watawara account associated with this email address has been successfully deleted as requested.
+          This email confirms that your Watawara account associated with this
+          email address has been successfully deleted as requested.
         </p>
 
         {/* Section on what they'll miss */}
-        <h3 style={{ ...headingStyle, fontSize: '20px', textAlign: 'left', marginTop: '30px' }}>What You&apos;ll Be Missing:</h3>
-        <ul style={{ ...textStyle, paddingLeft: "20px", marginBottom: '30px' }}>
+        <h3
+          style={{
+            ...headingStyle,
+            fontSize: "20px",
+            textAlign: "left",
+            marginTop: "30px",
+          }}
+        >
+          What You&apos;ll Be Missing:
+        </h3>
+        <ul style={{ ...textStyle, paddingLeft: "20px", marginBottom: "30px" }}>
           <li>Quick access to your past order history.</li>
           <li>Saved addresses for faster checkout.</li>
           <li>Your personalized wishlist.</li>
@@ -124,10 +134,13 @@ export async function Deleted({
         {/* Removed login details section */}
 
         <p style={textStyle}>
-          If you deleted your account by mistake or change your mind, you&apos;re always welcome back! You can create a new account anytime by visiting our website.
+          If you deleted your account by mistake or change your mind,
+          you&apos;re always welcome back! You can create a new account anytime
+          by visiting our website.
         </p>
         <p style={textStyle}>
-          If you did not request this deletion or have any concerns, please contact our support team immediately through the Help Center.
+          If you did not request this deletion or have any concerns, please
+          contact our support team immediately through the Help Center.
         </p>
         <div style={footerStyle}>
           <div>

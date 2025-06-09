@@ -4,9 +4,9 @@ import MoreInfo from "./MoreInfo"
 import Accept from "./Accept"
 
 export default function Footer () {
-    const company = ["about Watawara", "advertisement", "contact us", "careers", "Watawara blog", "become a merchant", "manufacturer service"]
-    const help = ["frequently asked question", "customer protection", "Reports & Dispute", "sitemap.xml", "partner with Watawara"]
-    const customer = ["Feedback survey", "terms and condition", "return & refund policy", "shipping info", "intellectual property policy", "customer agreement"]
+    const company = ["about Watawara", "advertisement", "contact us", "merchant services"]
+    const help = ["frequently asked question", "purchase protection", "Reports & Dispute", "sitemap"]
+    const customer = ["Feedback survey", "terms and conditions", "return & refund policy", "shipping info", "intellectual property policy"]
     return (
         <footer className="w-full h-auto bg-gray-800 relative">
             <div className="w-11/12 mx-auto ">

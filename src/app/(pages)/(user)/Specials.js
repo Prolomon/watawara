@@ -18,7 +18,7 @@ export default async function Specials() {
       icon={<CalendarClock size={22} />}
       title="limited offer"
       path="/category/limited"
-      option="70% off"
+      option="Check Our"
       products={plainProducts} // Pass the plain objects
     />
   );

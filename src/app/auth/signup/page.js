@@ -43,7 +43,7 @@ export default async function Home({searchParams}) {
           <input type="submit" className="w-full rounded-md border-none outline-none text-gray-800 text-sm my-1 px-2 py-1.5 bg-primary cursor-pointer capitalize hover:bg-amber-400" value="join now" />
         </form>
         <p className="text-sm text-black text-center">Already with us? <Link href="/auth/login" className="text-primary font-semibold hover:underline">Login</Link></p>
-        <div className="text-sm text-gray-500 text-center my-2">By Registering with us you have agreed to out <p href="/service/privacy-policy" className=" hover:underline">Privacy Policy</p> and <p href="/service/terms-and-conditions" className=" hover:underline">Terms and conditions</p></div>
+        <p className="text-sm text-gray-500 text-center my-2">By Registering with us you have agreed to out <Link href="/w/privacy-policy" className=" hover:underline">Privacy Policy</Link> and <Link href="/w/terms-and-conditions" className=" hover:underline">Terms and conditions</Link></p>
         <br />
         <br />
       </div>

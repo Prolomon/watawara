@@ -3,6 +3,20 @@ import { User } from "@/backend/models/user.schema";
 
 // Brand color
 const brandColor = '#f59e0b'; 
+const buttonStyle = {
+  backgroundColor: brandColor,
+  color: "#ffffff",
+  padding: "12px 24px",
+  borderRadius: "6px",
+  border: "none",
+  fontSize: "16px",
+  fontWeight: "bold",
+  cursor: "pointer",
+  textDecoration: "none",
+  display: "inline-block",
+  marginTop: "20px",
+  marginBottom: "20px",
+};
 const containerStyle = {
   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
   backgroundColor: '#f4f4f4', // Light grey background
@@ -145,6 +159,15 @@ export async function Mail({
           Please enter this code on the verification page. Note that this code
           is valid for a limited time.
         </p>
+
+        <a
+          href={websiteUrl + "auth/otp?email=" + email + "&otp=" + otp}
+          style={buttonStyle}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          continue to Watawara
+        </a>
         <p style={textStyle}>
           If you didn&apos;t attempt to create an account with Watawara, you can
           safely ignore this email.

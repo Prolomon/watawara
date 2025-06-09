@@ -1,11 +1,12 @@
-import mongoose from "mongoose"
-import { v4 as uuidv4 } from 'uuid';
+import mongoose from "mongoose";
+import { nanoid } from "nanoid";
 
-const productsSchema = mongoose.Schema(
+const productSchema = new mongoose.Schema(
   {
-    id: { type: String, default: uuidv4 },
+    id: { type: String, default: nanoid() },
     status: { type: Boolean, default: true },
     store: { type: String, default: "Watawara" },
+    sku: { type: String },
     storeId: { type: String },
     name: { type: String },
     price: { type: Number },
@@ -19,35 +20,34 @@ const productsSchema = mongoose.Schema(
       amount: { type: Number, default: 0 },
     },
     deliveryInfo: {
-      width: { type: String },
+      weight: { type: String },
       dimension: {
         length: { type: String },
-        weight: { type: String },
+        width: { type: String },
         height: { type: String },
       },
     },
     brand: { type: String },
-    colors: [{ type: String }],
+    color: [{ type: String, default: "none" }],
+    material: [{ type: String, default: "none" }],
+    size: [{ type: String, default: "none" }],
     description: { type: String },
+    content: { type: String },
+    promotion: {
+      start: { type: String },
+      end: { type: String },
+      type: { type: String },
+    },
     likes: [{ type: String }],
-    specifications: [
-      {
-        key: { type: String },
-        value: { type: String },
-      },
-    ],
+    specifications: [Object],
     images: [{ type: String }],
-    reviews: [
-      {
-        userId: { type: String },
-        date: { type: Date, default: new Date().toDateString() },
-        comment: { type: String },
-        rating: { type: String },
-      },
-    ],
   },
   {
     timestamps: true,
   }
 );
-export const Products = mongoose.models.Products || mongoose.model('Products', productsSchema);
+
+const Products =
+  mongoose.models?.products || mongoose.model("products", productSchema);
+
+export { Products };
