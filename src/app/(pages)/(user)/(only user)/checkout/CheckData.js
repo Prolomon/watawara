@@ -1,6 +1,6 @@
 import Currency from "@/utilities/currency/Currency";
 import Delivery from "./Delivery";
-import { auth } from "../../../../../../auth";
+import { authCookie } from "@/backend/authCookie";
 import { User } from "@/backend/models/user.schema";
 import { redirect } from "next/navigation";
 import { Products } from "@/backend/models/products.schema";
@@ -11,9 +11,9 @@ import { dbConnect } from "@/backend/server/server";
 
 export default async function Checkout() {
   await dbConnect()
-  const session = await auth();
-  const stored = (await cookies()).get("wata_delivery") || 0;
-  const user = await User.findOne({ email: session?.user?.email})
+  const session = await authCookie();
+  const stored = (await cookies())?.get("wata_delivery") || 0;
+  const user = await User.findOne({ email: session?.email})
 
   if (!user || !session) {
     redirect("/auth/login");

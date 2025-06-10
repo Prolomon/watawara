@@ -1,15 +1,15 @@
 import { dbConnect } from "@/backend/server/server";
 import Sidebar from "./Sidebar";
-import { auth } from "../../../../../auth";
 import { Wallet } from "@/backend/models/wallet.schema";
 import { redirect } from "next/navigation";
 import { User } from "@/backend/models/user.schema";
+import { authCookie } from "@/backend/authCookie";
 
 export default async function RootLayout({ children }) {
-  const session = await auth();
+  const session = await authCookie();
   await dbConnect();
-  const wallet = await Wallet.findOne({ userId: session.user.id });
-  const user = await User.findOne({ email: session?.user?.email })
+  const wallet = await Wallet.findOne({ userId: session?.id });
+  const user = await User.findOne({ email: session?.email })
   if (!wallet) redirect("/identity/verify-self")
   
   return (

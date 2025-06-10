@@ -1,17 +1,17 @@
 "use server";
 import Image from "next/image";
 import { User } from "@/backend/models/user.schema";
-import { auth } from "../../../../../../../auth";
+import { authCookie } from "@/backend/authCookie";
 import { dbConnect } from "@/backend/server/server";
 import { Orders } from "@/backend/models/order.schema";
 import EditProfile from "./EditProfile";
 
 export default async function Profile() {
   await dbConnect();
-  const session = await auth();
-  const orders = await Orders.find({ userId: String(session?.user?.id) });
+  const session = await authCookie();
+  const orders = await Orders.find({ userId: String(session?.id) });
 
-  const user = await User.findOne({ email: session?.user?.email });
+  const user = await User.findOne({ email: session?.email });
 
   return (
     <div className="">

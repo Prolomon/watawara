@@ -1,6 +1,5 @@
 "use server";
 import { dbConnect } from "@/backend/server/server";
-import { auth } from "../../../auth";
 import { Orders } from "../models/order.schema";
 import { redirect } from "next/navigation";
 import { User } from "../models/user.schema";
@@ -8,10 +7,11 @@ import { Mailer } from "../mailer";
 import { Products } from "../models/products.schema";
 import { cookies } from "next/headers";
 import { nanoid } from "nanoid";
+import { authCookie } from "../authCookie";
 
 export const cancelOrder = async (orderId) => {
-  const session = await auth();
-  const userId = session?.user?.id;
+  const session = await authCookie();
+  const userId = session?.id;
 
   await dbConnect();
 
@@ -34,8 +34,8 @@ export const cancelOrder = async (orderId) => {
 };
 
 export const orderAction = async () => {
-  const session = await auth();
-  const email = session?.user?.email;
+  const session = await authCookie();
+  const email = session?.email;
   const delivery = (await cookies()).get("wata_delivery_type")?.value || 0;
 
   if (!session || !email) {
@@ -100,7 +100,7 @@ export const orderAction = async () => {
   );
 
   const mainOrder = {
-    userId: session?.user?.id,
+    userId: session?.id,
     orderId,
     delivery,
     date: new Date(),

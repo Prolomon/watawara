@@ -1,15 +1,15 @@
 "use server";
 import Product from "@/components/product/Product";
 import { dbConnect } from "@/backend/server/server";
-import { auth } from "../../../../../auth";
 import { User } from "@/backend/models/user.schema";
+import { authCookie } from "@/backend/authCookie";
 
 export default async function WishProduct() {
-  const session = await auth();
+  const session = await authCookie();
 
   await dbConnect();
 
-  const user = await User.findOne({ email: session.user.email });
+  const user = await User.findOne({ email: session?.email });
 
   const wishlist = user.wishlist;
 

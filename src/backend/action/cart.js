@@ -1,13 +1,13 @@
 "use server";
 import { dbConnect } from "@/backend/server/server";
-import { auth } from "../../../auth";
 import { User } from "../models/user.schema";
 import { redirect } from "next/navigation";
+import { authCookie } from "../authCookie";
 
 export const add2Cart = async (quantity, productId, color, size) => {
   try {
-    const session = await auth();
-    const email = session?.user?.email;
+    const session = await authCookie();
+    const email = session?.email;
     await dbConnect();
 
     const user = await User.findOne({ email });
@@ -31,8 +31,8 @@ export const add2Cart = async (quantity, productId, color, size) => {
 
 export const add2CartBtn = async (id) => {
   try {
-    const session = await auth();
-    const email = session?.user?.email;
+    const session = await authCookie();
+    const email = session?.email;
     if (!session) redirect("/auth/login")
     await dbConnect();
 
@@ -59,8 +59,8 @@ export const add2CartBtn = async (id) => {
 
 export const delete4cart = async (id) => {
   try {
-    const session = await auth();
-    const email = session?.user?.email;
+    const session = await authCookie();
+    const email = session?.email;
 
     if (!email) {
       redirect("/auth/login?callbackUrl=/cart");

@@ -1,16 +1,16 @@
 import OrderCard from "./OrderCard";
 import { Box } from "lucide-react";
 import Link from "next/link";
-import { auth } from "../../../auth";
 import { dbConnect } from "@/backend/server/server";
 import { User } from "@/backend/models/user.schema";
 import { Orders } from "@/backend/models/order.schema";
 import { ChevronsUpDown } from "lucide-react";
+import { authCookie } from "@/backend/authCookie";
 
 export default async function AllOrders() {
   await dbConnect();
-  const session = await auth();
-  const user = await User.findOne({ email: session?.user?.email });
+  const session = await authCookie();
+  const user = await User.findOne({ email: session?.email });
   const order = await Orders.find({ userId: user?.id });
   return (
     <ul className={`w-3/5 max-md:w-full ${order ? null : "w-full"}`}>

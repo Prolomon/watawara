@@ -1,11 +1,7 @@
 "use server";
 import { ChevronDown, Settings2 } from "lucide-react";
-import { auth } from "../../../../../../auth";
-import { updateAccount } from "@/backend/action/user";
 
 export default async function Preference() {
-  const session = await auth();
-  const user = session?.user;
   return (
     <details className="w-full list-none rounded-md border border-gray-300 shadow-sm p-4">
       <summary className="w-full list-none text-sm flex justify-between items-center font-semibold text-gray-600">
@@ -16,7 +12,7 @@ export default async function Preference() {
         <ChevronDown size={20} />
       </summary>
       {/* form goes here */}
-      <form action={updateAccount} className="my-2">
+      <form className="my-2">
         <div className="w-full flex items-center justify-between mb-3">
           <label className="text-sm text-gray-600">
             Subscribe to our newsletter

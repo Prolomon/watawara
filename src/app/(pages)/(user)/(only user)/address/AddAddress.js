@@ -3,15 +3,15 @@ import Select from "@/utilities/select/Select";
 import Input from "@/utilities/input/Input";
 import Textarea from "@/utilities/textarea/Textarea";
 import { addAddress } from "@/backend/action/addAddress";
-import { auth } from "../../../../../../auth";
+import { authCookie } from "@/backend/authCookie";
 import { User } from "@/backend/models/user.schema";
 import { dbConnect } from "@/backend/server/server";
 
 export default async function AddAddress() {
   try {
     await dbConnect();
-    const session = await auth();
-    const user = await User.findOne({ _id: session?.user?.id });
+    const session = await authCookie();
+    const user = await User.findOne({ _id: session?.id });
 
     return (
       <details className="w-full list-none rounded-md border mt-3 mb-4 border-gray-300 shadow-sm p-4">

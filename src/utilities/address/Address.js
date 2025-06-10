@@ -1,13 +1,13 @@
 import Link from "next/link"
-import { auth } from "../../../auth"
 import { dbConnect } from "@/backend/server/server"
 import { User } from "@/backend/models/user.schema"
+import { authCookie } from "@/backend/authCookie"
 
 export default async function Address () {
 
     await dbConnect()
-    const session = await auth()
-    const user = await User.findOne({ email: session?.user?.email })
+    const session = await authCookie()
+    const user = await User.findOne({ email: session?.email })
 
     return (
       <div className="w-full p-3 bg-white border border-gray-200 rounded-md">

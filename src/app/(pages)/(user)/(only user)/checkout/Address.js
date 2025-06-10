@@ -1,17 +1,17 @@
 "use server";
 import Link from "next/link";
-import { auth } from "../../../../../../auth";
+import { authCookie } from "@/backend/authCookie";
 import { User } from "@/backend/models/user.schema";
 import { dbConnect } from "@/backend/server/server";
 
 export default async function Address() {
   await dbConnect()
-  const session = await auth();
+  const session = await authCookie();
   const u = await User.find({});
 
-  const user = await User.findOne({ email: session.user.email });
+  const user = await User.findOne({ email: session?.email });
 
-  const address = user.address;
+  const address = user?.address;
 
   return (
     <div className="w-full p-3 bg-white border border-gray-200 rounded-md">

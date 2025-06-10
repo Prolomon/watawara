@@ -1,15 +1,15 @@
 import Currency from "@/utilities/currency/Currency";
 import { dbConnect } from "@/backend/server/server";
-import { auth } from "../../../../auth";
+import { authCookie } from "@/backend/authCookie";
 import { User } from "@/backend/models/user.schema";
 import { redirect } from "next/dist/server/api-utils";
 import { Products } from "@/backend/models/products.schema";
 import CheckButton from "./CheckButton";
 
 export default async function Checkout() {
-  const session = await auth();
+  const session = await authCookie();
   await dbConnect();
-  const email = session?.user?.email;
+  const email = session?.email;
 
   const user = await User.findOne({ email });
 

@@ -1,8 +1,8 @@
-import { auth } from "../../../../auth";
+import { authCookie } from "@/backend/authCookie";
 import { redirect } from "next/navigation";
 
 export default async function RootLayout({ children }) {
-  const session = await auth();
+  const session = await authCookie();
 
   if (!session) {
     redirect("/auth/login");

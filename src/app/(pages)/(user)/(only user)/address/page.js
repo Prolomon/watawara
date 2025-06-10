@@ -1,7 +1,7 @@
 import { images } from "@/constants";
 import Address from "./Address";
 import AddAddress from "./AddAddress";
-import { auth } from "../../../../../../auth";
+import { authCookie } from "@/backend/authCookie";
 import { User } from "@/backend/models/user.schema";
 import { dbConnect } from "@/backend/server/server";
 
@@ -59,8 +59,8 @@ export const metadata = {
 export default async function Home() {
   try {
     await dbConnect();
-    const session = await auth();
-    const user = await User.findOne({ _id: session?.user?.id });
+    const session = await authCookie();
+    const user = await User.findOne({ _id: session?.id });
 
     return (
       <div className="w-full mx-auto h-full relative object-fit overflow-hidden mt-4 mb-10">

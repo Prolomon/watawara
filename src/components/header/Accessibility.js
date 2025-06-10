@@ -4,19 +4,19 @@ import Account from "./Account";
 import { WalletIcon } from "lucide-react";
 import Cart from "./Cart";
 import Language from "./Language";
-import { auth } from "../../../auth";
+import { authCookie } from "@/backend/authCookie";
 import { User } from "@/backend/models/user.schema";
 import { Orders } from "@/backend/models/order.schema";
 import { dbConnect } from "@/backend/server/server";
 import { Wallet } from "@/backend/models/wallet.schema";
 
 export default async function Accessibility({ quantity }) {
-  const session = await auth();
+  const session = await authCookie();
   await dbConnect();
 
-  const user = await User.findOne({ email: session?.user?.email });
+  const user = await User.findOne({ email: session?.email });
   const orders = await Orders.find({ userId: user?.id });
-  const wallet = await Wallet.findOne({ userId: session?.user?.id });
+  const wallet = await Wallet.findOne({ userId: session?.id });
 
   return (
     <div className="w-auto flex items-center gap-3 h-auto relative">

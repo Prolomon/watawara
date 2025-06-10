@@ -2,15 +2,15 @@
 import { UserPen, ChevronDown } from "lucide-react";
 import Select from "@/utilities/select/Select";
 import Input from "@/utilities/input/Input";
-import { auth } from "../../../../../../../auth";
+import { authCookie } from "@/backend/authCookie";
 import { updateAccount } from "@/backend/action/user";
 import { User } from "@/backend/models/user.schema";
 import { dbConnect } from "@/backend/server/server";
 
 export default async function EditProfile() {
-  const session = await auth();
+  const session = await authCookie();
   await dbConnect();
-  const user = await User.findOne({ email: session.user.email });
+  const user = await User.findOne({ email: session?.email });
   return (
     <form action={updateAccount} className="my-2 ">
       <div className="grid grid-cols-2 max-md:grid-cols-1 gap-x-2">

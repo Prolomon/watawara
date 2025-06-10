@@ -1,8 +1,8 @@
 import Merchant from "./Merchant";
 import { images } from "@/constants";
-// import { User } from "@/backend/models/user.schema";
-// import { auth } from "../../../../../../auth";
-// import { dbConnect } from "@/backend/server/server";
+import { User } from "@/backend/models/user.schema";
+import { authCookie } from "@/backend/authCookie";
+import { dbConnect } from "@/backend/server/server";
 
 export const metadata = {
   metadataBase: new URL(`${process.env.WATAWARA_BASE_URL}`),
@@ -66,16 +66,16 @@ export const metadata = {
 };
 
 export default async function Home() {
-  // await dbConnect()
-  // const session = await auth();
-  // const user = await User.findOne({ email: session.user.email });
+  await dbConnect()
+  const session = await authCookie();
+  const user = await User.findOne({ email: session?.email });
 
   return (
     <div className="w-full mx-auto h-full relative object-fit overflow-hidden mt-4 mb-10">
-      {/* {user.followed.length !== 0 ? (
+      {user.followed.length !== 0 ? (
         <div className="w-full flex flex-wrap">
-          {m ? (
-            m.map((_m, index) => <Merchant key={index} {..._m} />)
+          {user.followed ? (
+            user.followed.map((_m, index) => <Merchant key={index} {..._m} />)
           ) : (
             <div className="w-full h-full text-gray-500 grid place-content-center">
               No merchant found
@@ -86,7 +86,7 @@ export default async function Home() {
         <div className="w-full h-full grid place-content-center">
           You have not followed any merchant
         </div>
-      )} */}
+      )}
     </div>
   );
 }

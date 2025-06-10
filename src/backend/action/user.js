@@ -1,6 +1,5 @@
 "use server";
-import { signIn, signOut } from "../../../auth";
-import { AuthError } from "next-auth";
+import { signOut } from "../../../auth";
 import { redirect } from "next/navigation";
 import { auth } from "../../../auth";
 import { User } from "../models/user.schema";
@@ -12,36 +11,7 @@ import { Mailer } from "../mailer";
 import { Otp } from "@/utilities/currency/Otp";
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
-
-// export async function login(formData) {
-//   try {
-//     const email = formData.get("email");
-//     const password = formData.get("password");
-//     // await Mailer(email, "login");
-
-//     // Fixed syntax error: removed the extra '{'
-//     const result = await signIn("credentials", {
-//       email,
-//       password,
-//       redirect: false,
-//     });
-
-//     // Return the result object from signIn (contains ok: true on success)
-//     return result;
-
-//   } catch (error) {
-//     // Catch AuthErrors thrown by signIn on failure
-//     if (error instanceof AuthError) {
-//       // Log the error on the server for debugging
-//       console.error("AuthError during login:", error);
-//       // Return the error type to the client
-//       return { error: error.type || "AuthError" };
-//     }
-//     // Catch any other unexpected errors
-//     console.error("Unexpected server action login error:", error);
-//     return { error: "An unexpected server error occurred." };
-//   }
-// }
+import { authCookie } from "../authCookie";
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET || "");
 
@@ -123,12 +93,10 @@ export async function login(formData) {
   }
 }
 
-
 export const logout = async () => {
   // Use the server-side signOut from auth.js
-  await signOut({ redirect: true });
-
-  redirect("/auth/login");
+ (await cookies())?.delete("auth.watawara.session");
+  await signOut();
 };
 
 export const updateAccount = async (formData) => {
@@ -136,12 +104,12 @@ export const updateAccount = async (formData) => {
     await dbConnect();
 
     // Get user session?
-    const session = await auth();
-    if (!session?.user?.email) {
+    const session = await authCookie();
+    if (!session?.email) {
       throw new Error("User not authenticated");
     }
 
-    const email = session?.user.email;
+    const email = session?.email;
 
     const avatarFile = formData.get("avatar");
     let avatarUrl = null; // Initialize avatarUrl
@@ -234,15 +202,16 @@ export async function forgottenPassword(e) {
 }
 
 export async function deleteAccount(formData) {
-  const session = await auth();
+  const session = await authCookie();
   const email = formData.get("email");
   const curUser = await User.findOne({ email });
-  if (!email || !curUser || session.user.email != curUser.email) redirect("/settings?validate=failed");
+  if (!email || !curUser || session?.email != curUser.email) redirect("/settings?validate=failed");
   const otp = await Otp();
   (await cookies()).set("_watawara_otp", await hash(String(otp), 10), {
     expires: new Date(Date.now() + 10 * 60 * 1000),
   });
-  await signOut({ redirect: true });
+  (await cookies())?.delete("auth.watawara.session");
+  await signOut();
   await Mailer(email, "deleteOtp", otp);
   redirect("/auth/otp?email=" + email + "&authType=deletion");
 }

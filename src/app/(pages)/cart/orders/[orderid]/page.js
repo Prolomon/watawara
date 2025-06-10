@@ -8,7 +8,7 @@ import Map from "./Map";
 import { images } from "@/constants";
 import { dbConnect } from "@/backend/server/server";
 import { User } from "@/backend/models/user.schema";
-import { auth } from "../../../../../../auth";
+import { authCookie } from "@/backend/authCookie";
 import { Orders } from "@/backend/models/order.schema";
 import AllOrders from "./AllOrders";
 import Currency from "@/utilities/currency/Currency";
@@ -81,9 +81,9 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function Home({ params }) {
-  const session = await auth();
+  const session = await authCookie();
   await dbConnect();
-  const user = await User.findOne({ email: session.user.email });
+  const user = await User.findOne({ email: session?.email });
   const { orderid } = await params;
   // fetch data
   const ord = await Orders.findOne({ userId: user?.id, orderId: orderid });

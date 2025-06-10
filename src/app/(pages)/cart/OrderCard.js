@@ -34,28 +34,28 @@ export default async function OrderCard({ productId, quantity, color, size }) {
             <div>
               <div className="flex justify-between items-start gap-3">
                 <h2 className="text-sm font-semibold text-black line-clamp-2">
-                  {product.name}
+                  {product?.name}
                 </h2>
                 <AddCheckout
-                  productId={product.id}
+                  productId={product?.id}
                   quantity={quantity}
                   color={color}
                   size={size}
-                  price={productId.price}
-                  name={product.title}
+                  price={productId?.price}
+                  name={product?.title}
                 />
               </div>
               {/* section for brand and price */}
               <div className="flex gap-3 justify-between">
                 <h3 className="text-sm text-primary font-semibold capitalize">
-                  {product.brand}
+                  {product?.brand}
                 </h3>
                 <h2 className="text-xl font-semibold text-black">
-                  {Currency(product.price * JSON.parse(quantity))}
+                  {Currency(product?.price * JSON.parse(quantity))}
                 </h2>
               </div>
               <h3 className="text-sm pb-1 text-gray-500 font-semibold capitalize">
-                {product.current_stock} of {product.stock} in Stock
+                {product?.current_stock} of {product?.stock} in Stock
               </h3>
               {/* section for crud and quantity */}
               <div className="flex gap-3 justify-between items-center">

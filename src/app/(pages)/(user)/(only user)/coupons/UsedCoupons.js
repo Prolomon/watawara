@@ -1,9 +1,9 @@
 "use server"
 import Coupon from "./Coupon"
-import { auth } from "../../../../../../auth"
+import { authCookie } from "@/backend/authCookie"
 
 export default async function UsedCoupons () {
-    const session = await auth()
+    const session = await authCookie()
     return (
         <section className="w-full mt-2">
             <h3 className="text-md font-semibold text-gray-800">Used Coupons</h3>

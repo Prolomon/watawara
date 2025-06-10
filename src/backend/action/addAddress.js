@@ -1,16 +1,16 @@
 "use server";
 import { User } from "../models/user.schema";
-import { auth } from "../../../auth";
 import { dbConnect } from "../server/server";
 import { redirect } from "next/navigation";
+import { authCookie } from "../authCookie";
 
 export const addAddress = async (formData) => {
   // Get database connection
   await dbConnect();
 
   // Get user session?
-  const session = await auth();
-  if (!session?.user?.id) {
+  const session = await authCookie();
+  if (!session?.id) {
     throw new Error("User not authenticated");
   }
 
@@ -22,10 +22,10 @@ export const addAddress = async (formData) => {
     postalCode: formData.get("postal"),
     address: formData.get("address"),
   };
-  const id = session?.user?.id;
+  const id = session?.id;
 
   // Update user with timeout settings
-  const result = await User.findByIdAndUpdate(
+  const result = await User.updateOne(
     id,
     { $set: { address: { ...address } } },
     {

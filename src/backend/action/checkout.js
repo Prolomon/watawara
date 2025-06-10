@@ -1,20 +1,19 @@
 "use server";
 import { redirect } from "next/navigation";
 import { dbConnect } from "@/backend/server/server";
-import { auth } from "../../../auth";
 import { User } from "../models/user.schema";
 import { nanoid } from "nanoid";
 import { Products } from "../models/products.schema";
 import { Orders } from "../models/order.schema";
-import { Mailer } from "../mailer";
+import { authCookie } from "../authCookie";
 
 export const checkRedirect = async (subTotal, tax, shipping, total) => {
-  const session = await auth();
-  const userId = session?.user?.id;
+  const session = await authCookie();
+  const userId = session?.id;
 
   if (!session || !userId) redirect("/auth/login")
   await dbConnect();
-  const user = await User.findOne({ email: session?.user?.email });
+  const user = await User.findOne({ email: session?.email });
   if (!user) redirect("/auth/login");
 
   
@@ -27,7 +26,7 @@ export const checkRedirect = async (subTotal, tax, shipping, total) => {
    {
      $set: {
        checkout: {
-         userId: session.user.id.toString(),
+         userId: session?.id.toString(),
          payment: false,
          delivery: "delivery",
          subTotal: subTotal,
@@ -47,19 +46,19 @@ export const checkRedirect = async (subTotal, tax, shipping, total) => {
 
 export const add2Checkout = async (productId, quantity, color, size) => {
 
-  const session = await auth();
-  const userId = session?.user?.id;
+  const session = await authCookie();
+  const email = session?.email;
 
   await dbConnect();
-  const user = await User.findOne({ _id: userId });
+  const user = await User.findOne({ email: email });
 
-  if (!user || !session || !userId) {
+  if (!user || !session || !email) {
     redirect("/auth/login");
   }
 
   // Corrected update operation
-  await User.findByIdAndUpdate(
-    userId,
+  await User.updateOne(
+    {email},
     {
       $push: {
         "checkout.products": { productId, quantity, color, size }
@@ -77,8 +76,8 @@ export const add2Checkout = async (productId, quantity, color, size) => {
 };
 
 export const checkoutNow = async (quantity, id, color, size) => {
-  const session = await auth();
-  const email = session?.user?.email;
+  const session = await authCookie();
+  const email = session?.email;
 
   await dbConnect();
   const user = await User.findOne({ email });
@@ -90,7 +89,7 @@ export const checkoutNow = async (quantity, id, color, size) => {
   }
   const orderId = nanoid();
   const newOrder = {
-    userId: session?.user?.id.toString(),
+    userId: session?.id.toString(),
     orderId,
     size,
     subTotal: product.price * quantity,
@@ -120,7 +119,7 @@ export const checkoutNow = async (quantity, id, color, size) => {
 
   // Corrected update operation
   await Orders.create(newOrder);
-  await Mailer(email, newOrder.orderId, "order");
+  // await Mailer(email, newOrder.orderId, "order");
 
   redirect(`/cart/orders/${orderId}`);
 };
