@@ -77,7 +77,7 @@ export default function Home() {
             {/* user email address */}
             <Input title={`One-Time Password`} type={`number`} name={`otp`} />
             <input type="hidden" name="email" defaultValue={message.email} />
-            <input type="hidden" name="authType" defaultValue={authType} />
+            <input type="hidden" name="authType" />
             <input
               type="submit"
               className="w-full rounded-md border-none outline-none text-gray-800 text-sm my-1 px-2 py-1.5 bg-primary cursor-pointer capitalize hover:bg-amber-400"
