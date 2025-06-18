@@ -1,10 +1,10 @@
 import Image from "next/image"
 import {images} from "@/constants"
 import Link from "next/link"
-import Password from "@/utilities/password/Password"
-import { resetPassword } from "@/backend/action/user"
-import Input from "@/utilities/input/Input"
-// import Resend from "./Resend"
+import ResetForm from "./ResetForm"
+import { dbConnect } from "@/backend/server/server"
+import { User } from "@/backend/models/user.schema"
+import { cookies } from "next/headers"
 
 export const metadata = {
   title: `Watawara | Welcome Back`,
@@ -12,7 +12,11 @@ export const metadata = {
 }
 
 export default async function Home({searchParams}) {
-  const { email, status } = await searchParams
+  const { id } = await searchParams
+  await dbConnect()
+
+  const user = await User.findOne({ _id: id})
+
   return (
     <main className="w-11/12 mx-auto h-dvh flex items-center relative object-fit py-4">
       <div className="w-10/12 flex mx-auto border border-gray-400 max-md:border-none rounded-md overflow-hidden">
@@ -38,26 +42,10 @@ export default async function Home({searchParams}) {
             Watawara Password Reset
           </h1>
           <h5 className="text-base text-gray-600 max-md:text-center">
-            Please enter the One-Time Password (OTP) that was sent to {email}
+            Please enter the One-Time Password (OTP) that was sent to{" "}
+            {user?.email || (await cookies()).get("auth.watawara.email").value}
           </h5>
-          {status && (
-            <div className="my-2 p-3 bg-red-100 border border-red-300 text-red-700 text-sm rounded text-center">
-              {/* Display the cleaned error state directly */}
-              {status}
-            </div>
-          )}
-          <form action={resetPassword} className="mt-2">
-            {/* one time password input field */}
-            <Input title={`One Time Password`} type={`number`} name={`otp`} />
-            {/* new password input field */}
-            <Password />
-            <input type="hidden" name="email" defaultValue={email} />
-            <input
-              type="submit"
-              className="w-full rounded-md border-none outline-none text-gray-800 text-sm px-2 py-1.5 my-1.5 bg-primary capitalize hover:bg-amber-300"
-              value="Reset Password"
-            />
-          </form>
+          <ResetForm id={id} />
           {/* <Resend email={email} /> */}
           <p className="text-sm text-gray-800">
             Remembered your password?{" "}

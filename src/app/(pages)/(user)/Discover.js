@@ -18,7 +18,7 @@ export default function SimilarProducts() {
             setProducts(data.p);
           })
           .catch((e) => {
-            console.error("Error fetching products:", error);
+            console.error("Error fetching products:", e);
             setProducts([]);
           });
       } catch (error) {
@@ -39,7 +39,7 @@ export default function SimilarProducts() {
         <h1 className="font-bold text-xl capitalize text-gray-800 text-center mb-6 mt-4">
           Discover Amazing Products That Match Your Style
         </h1>
-        <p className="text-center text-red-500">
+        <p className="text-center">
           <Image
             src="/loader.gif"
             alt="Error"

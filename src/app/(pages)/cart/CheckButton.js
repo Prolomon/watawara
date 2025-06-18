@@ -8,6 +8,7 @@ export default function CheckButton({
   shipping,
   total,
   length,
+  active
 }) {
 
   const [show, setShow] = useState(false);
@@ -32,6 +33,7 @@ export default function CheckButton({
       type="button"
       onClick={handleClick }
       className="w-full mt-3 text-sm bg-primary hover:bg-secondary rounded-ms py-1 rounded-md text-black"
+      disabled={active ? true : false}
     >
       {show ? "Redirecting..." : `Checkout(${length})`}
     </button>

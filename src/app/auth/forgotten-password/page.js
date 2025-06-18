@@ -1,16 +1,16 @@
 import Image from "next/image";
 import { images } from "@/constants";
 import Link from "next/link";
-import { forgottenPassword } from "@/backend/action/user";
 import Input from "@/utilities/input/Input";
+import ForgottenForm from "./ForgottenForm";
 
 export const metadata = {
   title: `Watawara | Welcome Back`,
   description: `Forgot your password? No problem! Reset your account password quickly and securely. Enter your email address, and we'll send your otp to create a new password. Get back to enjoying amazing offers from us.`,
 };
 
-export default async function Home({ searchParams }) {
-  const { message } = await searchParams;
+export default function Home({ searchParams }) {
+
   return (
     <main className="w-11/12 mx-auto flex items-center justify-center h-dvh relative object-fit py-4">
       <div className="w-10/12 flex mx-auto border border-gray-400 max-md:border-none rounded-md overflow-hidden">
@@ -37,22 +37,7 @@ export default async function Home({ searchParams }) {
           <h5 className="text-base text-gray-600 max-md:text-center">
             Enter your Email address to verify your account to continue.
           </h5>
-          {message && (
-            <div className="my-2 p-3 bg-red-100 border border-red-300 text-red-700 text-sm rounded">
-              {/* Display the cleaned error state directly */}
-              {message}
-            </div>
-          )}
-          <form action={forgottenPassword} className="my-2">
-            {/* input for email */}
-            <Input title={`email`} type={`email`} name={`email`} />
-
-            <input
-              type="submit"
-              className="w-full rounded-md border-none outline-none text-gray-800 text-sm px-2 py-1.5 mt-2 bg-primary capitalize hover:bg-amber-300"
-              value="Send One-Time Password"
-            />
-          </form>
+          <ForgottenForm />
           <p className="text-sm text-gray-800">
             Already with us?{" "}
             <Link

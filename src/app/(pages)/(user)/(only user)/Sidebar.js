@@ -5,7 +5,6 @@ import {
   User,
   Users,
   Newspaper,
-  PackageCheck,
   Settings,
   Map,
   Ticket,
@@ -23,11 +22,6 @@ export function Sidebar({ name }) {
       href: "/followed-stores",
       text: "Followed Stores",
       icon: <Users size={20} />,
-    },
-    {
-      href: "/checkout",
-      text: "Checkout",
-      icon: <PackageCheck size={20} />,
     },
     {
       href: "/reviews",

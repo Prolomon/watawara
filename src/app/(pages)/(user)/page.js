@@ -70,16 +70,16 @@ export const metadata = {
 export default async function Home() {
   await dbConnect()
   const advertisements = await Advertisement.find({})
-  const _a = advertisements.map((a) => ({
-    advertisement: a.advertisement,
-    default: a.default,
+  const _a = advertisements?.map((a) => ({
+    advertisement: a?.advertisement,
+    default: a?.default,
   }));
 
-  const advertisement = _a.find(a => a.default == true)
+  const advertisement = _a?.find(a => a?.default == true)
 
   return (
     <div className="w-full h-full relative bg-white">
-      <Banner large={advertisement.advertisement.large} small={advertisement.advertisement.small} />
+      <Banner large={advertisement?.advertisement?.large} small={advertisement?.advertisement?.small} />
       <Specials />
       <Discover />
     </div>

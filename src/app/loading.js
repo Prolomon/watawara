@@ -13,7 +13,7 @@ export default function Loading() {
             src={images.logo}
             width={100}
             height={100}
-            className="w-24 h-24 aspect-square mx-auto"
+            className="w-24 h-24 aspect-square mx-auto transition-all animate-pulse"
           />
           <BarLoader color="#f59e0b" loading speedMultiplier={1} width={200} />
         </div>

@@ -67,21 +67,21 @@ export default async function Checkout() {
         <hr className="border-gray-600" />
         <li className="w-full flex justify-between">
           <span className="font-normal text-base text-gray-500">Subtotal</span>
-          <span className="font-semibold text-base">{Currency(subTotal)}</span>
+          <span className=" text-base">{Currency(subTotal)}</span>
         </li>
         <li className="w-full flex justify-between">
           <span className="font-normal text-base text-gray-500">Shipping</span>
-          <span className="font-semibold text-base">{Currency(shipping)}</span>
+          <span className=" text-base">{Currency(shipping)}</span>
         </li>
         <li className="w-full flex justify-between">
           <span className="font-normal text-base text-gray-500">Tax</span>
-          <span className="font-semibold text-base">{Currency(tax)}</span>
+          <span className=" text-base">{Currency(tax)}</span>
         </li>
         <Delivery express={express} />
         <hr className="border-gray-600" />
         <li className="w-full flex justify-between">
           <span className="font-normal text-base text-gray-500">Total</span>
-          <span className="font-semibold text-base">{Currency(total)}</span>
+          <span className=" text-base">{Currency(total)}</span>
         </li>
       </ul>
       <CheckButton />

@@ -64,13 +64,12 @@ export async function login(formData) {
       .setExpirationTime("7d")
       .sign(secret);
 
-    const cookieStore = cookies();
-    cookieStore.set("auth.watawara.session", jwt, {
+      (await cookies()).set("auth.watawara.session", jwt, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",
-      maxAge: 60 * 60 * 24 * 7, // 7 days in seconds
+      maxAge: 60 * 60 * 24 * 30, // 7 days in seconds
     });
 
     // if (user.status === "inactive") {
@@ -95,7 +94,7 @@ export async function login(formData) {
 
 export const logout = async () => {
   // Use the server-side signOut from auth.js
- (await cookies())?.delete("auth.watawara.session");
+  (await cookies())?.delete("auth.watawara.session");
   await signOut();
 };
 
@@ -159,55 +158,97 @@ export const updateAccount = async (formData) => {
 };
 
 export async function resetPassword(formData) {
-  await dbConnect();
-  const otp = formData.get("otp"),
-    password = formData.get("password"),
-    email = formData.get("email"),
-    hashOtp = cookies().get("_watawara_otp")?.value;
+  try {
+    await dbConnect();
+    const otp = formData.get("otp"),
+      password = formData.get("password"),
+      email = formData.get("email"),
+      hashOtp = (await cookies()).get("auth.watawara.otp")?.value;
 
-  console.log(hashOtp);
-
-  const isMatch = await compare(String(otp), hashOtp);
-  console.log(isMatch);
-  if (!isMatch) {
-    redirect(
-      "/auth/forgotten-password/reset?status=Invalid OTP code provided&email=" +
-        email
+    const isMatch = await compare(String(otp), hashOtp);
+    if (!isMatch) {
+      return {
+        success: false,
+        message: "Wrong OTP provided",
+      };
+    }
+    const saltRounds = 12;
+    const hashPassword = await hash(password, saltRounds);
+    const result = await User.updateOne(
+      { email },
+      { password: hashPassword, otp: null }
     );
+
+    if (!result) {
+      return {
+        success: false,
+        message: "Failed to Reset User Password",
+      };
+    }
+
+    // await Mailer(email, "reset");
+    return {
+      success: true,
+      message: "Wrong OTP provided",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: e.message,
+    };
   }
-  const saltRounds = 12;
-  const hashPassword = await hash(password, saltRounds);
-  await User.updateOne({ email }, { password: hashPassword, otp: null });
-  await Mailer(email, "reset");
-  redirect("/auth/login");
 }
 
 export async function forgottenPassword(e) {
-  await dbConnect();
-  const email = e.get("email");
-  const user = await User.findOne({ email });
+  try {
+    await dbConnect();
+    const email = e.get("email");
+    const user = await User.findOne({ email });
 
-  if (!user)
-    redirect(
-      "/auth/forgotten-password?message=Email does not exist in database"
-    );
-  const otp = await Otp();
-  (await cookies()).set("_watawara_otp", await hash(String(otp), 10), {
-    expires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes expiry
-  });
+    if (!email)
+      return {
+        success: false,
+        message: "Input field cannot be empty",
+      };
 
-  await Mailer(email, "otp", otp);
+    if (!user)
+      return {
+        success: false,
+        message: "User does not exist",
+      };
 
-  redirect("/auth/forgotten-password/reset?authCode=kwt&email=" + email);
+    const otp = await Otp();
+
+    (await cookies()).set("auth.watawara.otp", await hash(String(otp), 10), {
+      expires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes expiry
+    });
+
+    (await cookies()).set("auth.watawara.email", email, {
+      expires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes expiry
+    });
+
+    // await Mailer(email, "otp", otp);
+
+    return {
+      success: true,
+      message: "Reset mail has been sent to your mail" + email,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message,
+    };
+  }
 }
 
 export async function deleteAccount(formData) {
   const session = await authCookie();
   const email = formData.get("email");
   const curUser = await User.findOne({ email });
-  if (!email || !curUser || session?.email != curUser.email) redirect("/settings?validate=failed");
+  if (!email || !curUser || session?.email != curUser.email)
+    redirect("/settings?validate=failed");
   const otp = await Otp();
-  (await cookies()).set("_watawara_otp", await hash(String(otp), 10), {
+  (await cookies()).set("auth.watawara.otp", await hash(String(otp), 10), {
     expires: new Date(Date.now() + 10 * 60 * 1000),
   });
   (await cookies())?.delete("auth.watawara.session");
@@ -217,67 +258,124 @@ export async function deleteAccount(formData) {
 }
 
 export const createAccount = async (formData) => {
-  const fullname = formData.get("fullname").toLowerCase();
-  const email = formData.get("email").toLowerCase();
-  const phoneNo = formData.get("phone_no").toLowerCase();
-  const dob = formData.get("dob").toLowerCase();
-  const gender = formData.get("gender").toLowerCase();
-  const password = formData.get("password");
+  try {
+    const fullname = formData.get("fullname").toLowerCase();
+    const email = formData.get("email").toLowerCase();
+    const phoneNo = formData.get("phone_no").toLowerCase();
+    const dob = formData.get("dob").toLowerCase();
+    const gender = formData.get("gender").toLowerCase();
+    const password = formData.get("password");
 
-  if (!fullname || !email || !phoneNo || !password)
-    redirect("/auth/signup?message=all-fields-required");
+    if (!fullname || !email || !phoneNo || !password) {
+      return {
+        success: false,
+        message: "All fields are required.",
+      };
+    }
 
-  await dbConnect();
-  const existingUser = await User.findOne({ email });
-  if (existingUser) redirect("/auth/signup?message=email-exists");
-  const saltRounds = 16;
-  const hashPassword = await hash(password, saltRounds);
-  const otp = await Otp();
-  await cookies().set("_watawara_otp", await hash(String(otp), 10), {
-    expires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes expiry
-  });
+    await dbConnect();
+    const existingUser = await User.findOne({ email });
 
-  const newUser = await User.create({
-    fullname,
-    email,
-    phoneNo,
-    dob,
-    gender,
-    password: hashPassword,
-    status: "inactive",
-  });
+    if (existingUser) {
+      return {
+        success: false,
+        message: "User already exist",
+      };
+    }
 
-  if (!newUser) redirect("/auth/signup?message=user-creation-error");
+    const saltRounds = 16;
+    const hashPassword = await hash(password, saltRounds);
 
-  await Mailer(email, "welcome", otp);
+    const otp = await Otp();
+    console.log(otp);
+    (await cookies()).set("auth.watawara.otp", await hash(String(otp), 10), {
+      expires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes expiry
+    });
+    (await cookies()).set("auth.watawara.email", email, {
+      expires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes expiry
+    });
 
-  redirect("/auth/otp?email=" + email + "&authType=authenticate");
+    const newUser = await User.create({
+      fullname,
+      email,
+      phoneNo,
+      dob,
+      gender,
+      password: hashPassword,
+      status: "inactive",
+    });
+
+    if (!newUser) {
+      return {
+        success: false,
+        message: "Unable to create user account",
+      };
+    }
+
+    // await Mailer(email, "welcome", otp);
+
+    return {
+      success: true,
+      message: "Account creation successful, redirecting...",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message,
+    };
+  }
 };
 
 export const userOtp = async (formData) => {
-  const email = formData.get("email");
-  const otp = formData.get("otp");
-  const authType = formData.get("authType");
-  await dbConnect();
+  try {
+    const otp = formData.get("otp");
+    await dbConnect();
 
-  if (!otp) redirect("/auth/login?message=all-fields-required");
+    if (!otp)
+      return {
+        success: false,
+        message: "Please provide the otp.",
+      };
 
-  // Check if user already exists
-  const user = await User.findOne({ email }),
-  hashOtp = cookies().get("_watawara_otp")?.value;
+    const optObj = {
+      otp: (await cookies()).get("auth.watawara.obj")?.value,
+      email: (await cookies()).get("auth.watawara.email")?.value,
+    };
+    // Check if user already exists
+    const user = await User.findOne({ email: optObj.email });
 
-  if (user.status === "active") redirect("/auth/login");
-  const isMatch = await compare(String(otp), hashOtp);
+    if (user.status === "active")
+      return {
+        success: false,
+        message: "active",
+      };
+    const isMatch = await compare(String(otp), optObj?.hashOtp);
 
-  if (!isMatch) redirect(`/auth/otp?email=${email}&message=invalid-otp`);
+    if (!isMatch)
+      return {
+        success: false,
+        message: "Invalid OTP code provided.",
+      };
 
-  if (authType === "authenticate") {
-    await Mailer(email, "login");
-    await User.updateOne({ email }, { status: "active", otp: null });
-  } else {
-    await Mailer(email, "delete");
-    await User.deleteOne({ email });
+    const result = await User.updateOne(
+      { email },
+      { status: "active", otp: null }
+    );
+
+    if (result)
+      return {
+        success: true,
+        message: "User account activated",
+      };
+
+    return {
+      success: false,
+      message: "Unable to activate user account.",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message,
+    };
   }
-
-  redirect("/auth/login");
 };

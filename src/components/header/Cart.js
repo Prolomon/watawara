@@ -2,14 +2,15 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShoppingCart, BookmarkPlus, Box } from "lucide-react";
+import { ShoppingCart, BookmarkPlus, Box, PackageCheck } from "lucide-react";
 
-export default function Cart({ carts, orders, wishlists }) {
+export default function Cart({ carts, orders, wishlists, checkout }) {
   const [cartOpen, setCartOpen] = useState(false);
   const [displayValues, setDisplayValues] = useState({
     carts,
     orders,
     wishlists,
+    checkout,
   });
   const dropdownRef = useRef(null);
   const pathname = usePathname();
@@ -20,8 +21,9 @@ export default function Cart({ carts, orders, wishlists }) {
       carts: carts !== prev.carts ? carts : prev.carts,
       orders: orders !== prev.orders ? orders : prev.orders,
       wishlists: wishlists !== prev.wishlists ? wishlists : prev.wishlists,
+      wishlists: checkout !== prev.checkout ? checkout : prev.checkout,
     }));
-  }, [carts, orders, wishlists]);
+  }, [carts, checkout, orders, wishlists]);
 
   // Memoize the info array using displayValues
   const info = useMemo(
@@ -31,6 +33,12 @@ export default function Cart({ carts, orders, wishlists }) {
         text: "Your Cart",
         quantity: displayValues.carts,
         icon: <ShoppingCart size={20} />,
+      },
+      {
+        href: "/cart/checkout",
+        text: "Your Checkout",
+        quantity: displayValues.checkouts,
+        icon: <PackageCheck size={20} />,
       },
       {
         href: "/cart/orders",

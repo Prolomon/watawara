@@ -48,7 +48,7 @@ export default function Banner({large, small}) {
     }, 3000);
 
     return () => clearInterval(intervalRef.current);
-  }, [isMediumScreen, defaultBannerImages.length, mediumBannerImages.length]);
+  }, [isMediumScreen, defaultBannerImages?.length, mediumBannerImages?.length]);
 
   const goTo = (idx) => setCurrent(idx);
 

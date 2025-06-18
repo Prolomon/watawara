@@ -21,7 +21,7 @@ export default async function Address() {
           Update Address
         </Link>
       </div>
-      {!address.address ? (
+      {!address?.address ? (
         <p className="w-full text-center grid place-content-center h-64 text-sm text-gray-600">
           You have not set up a shipping address
         </p>
@@ -31,29 +31,29 @@ export default async function Address() {
             <h3 className="font-semibold text-base text-gray-700">
               Street Address:
             </h3>
-            <p className="text-gray-600 text-sm">{address.address}</p>
+            <p className="text-gray-600 text-sm">{address?.address}</p>
           </li>
           <li className="flex items-center justify-between mb-2">
             <h3 className="font-semibold text-base text-gray-700">Landmark:</h3>
-            <p className="text-gray-600 text-sm">{address.landmark}</p>
+            <p className="text-gray-600 text-sm">{address?.landmark}</p>
           </li>
           <li className="flex items-center justify-between mb-2">
             <h3 className="font-semibold text-base text-gray-700">City:</h3>
-            <p className="text-gray-600 text-sm">{address.city}</p>
+            <p className="text-gray-600 text-sm">{address?.city}</p>
           </li>
           <li className="flex items-center justify-between mb-2">
             <h3 className="font-semibold text-base text-gray-700">State:</h3>
-            <p className="text-gray-600 text-sm">{address.state}</p>
+            <p className="text-gray-600 text-sm">{address?.state}</p>
           </li>
           <li className="flex items-center justify-between mb-2">
             <h3 className="font-semibold text-base text-gray-700">Country:</h3>
-            <p className="text-gray-600 text-sm">{address.country}</p>
+            <p className="text-gray-600 text-sm">{address?.country}</p>
           </li>
           <li className="flex items-center justify-between mb-2">
             <h3 className="font-semibold text-base text-gray-700">
               Postal Code:
             </h3>
-            <p className="text-gray-600 text-sm">{address.postal}</p>
+            <p className="text-gray-600 text-sm">{address?.postal}</p>
           </li>
         </ul>
       )}

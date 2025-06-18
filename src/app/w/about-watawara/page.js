@@ -1,66 +1,36 @@
-"use client"; // This is a Client Component
 
-import { useState, useRef, useEffect } from 'react';
-// Import mammoth instead of docx-preview
-import mammoth from 'mammoth';
 
-export default function Home () {
-    // Removed selectedFile state as we are fetching a specific file
-    const previewContainerRef = useRef(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const fetchAndRenderDoc = async () => {
-            if (!previewContainerRef.current) {
-                return; // Ensure the container is available
-            }
-
-            setLoading(true);
-            setError(null);
-            previewContainerRef.current.innerHTML = ''; // Clear previous content
-
-            try {
-                // Fetch the .docx file from the public directory
-                const response = await fetch('/documents/about-watawara.docx');
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                // Get the file content as an ArrayBuffer (mammoth.js works with ArrayBuffer)
-                const arrayBuffer = await response.arrayBuffer();
-
-                // Use mammoth.js to convert the docx ArrayBuffer to HTML
-                const result = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
-
-                // Insert the generated HTML into the preview container
-                previewContainerRef.current.innerHTML = result.value;
-
-                console.log("DOCX preview rendered successfully using mammoth.js");
-
-            } catch (err) {
-                console.error("Error fetching or rendering DOCX preview:", err);
-                setError("Failed to load or render the document.");
-                previewContainerRef.current.innerHTML = '<p style="color: red;">Error loading document: ' + (err.message || 'Unknown error') + '</p>';
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchAndRenderDoc();
-
-    }, []); // Empty dependency array means this effect runs only once on mount
-
+export default async function Home () {
     return (
-        // Modified main class to take full width and removed padding/margins
-        <main className="w-full">
-            {/* You might want to keep the header content centered or add padding here */}
-            <div className="w-11/12 py-4 mx-auto">
-                {loading && <p className="w-11/12 mx-auto">Loading document preview...</p>}
-                {error && <p className="w-11/12 mx-auto" style={{ color: 'red' }}>{error}</p>}
-                <div ref={previewContainerRef} className="text-gray-600 docx"></div>
+      <main className="w-full bg-gradient-to-br from-blue-50 to-amber-100 min-h-screen">
+        <div className="w-11/12 py-10 mx-auto text-center">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-amber-700 mb-4 drop-shadow-lg animate-bounce">
+            Welcome to Watawara!
+          </h1>
+          <p className="text-lg md:text-xl text-gray-700 mb-8 font-medium max-w-2xl mx-auto">
+            Where innovation meets passion. We are more than just a brand—we are a movement, a community, and your trusted partner in making life extraordinary.
+          </p>
+          <div className="flex flex-col md:flex-row gap-8 justify-center mb-10">
+            <div className="bg-white rounded-xl shadow-lg p-6 flex-1 border-t-4 border-amber-400">
+              <h2 className="text-2xl font-bold text-amber-600 mb-2">Our Mission</h2>
+              <p className="text-gray-600">To empower individuals and businesses with innovative solutions that inspire growth, creativity, and positive change.</p>
             </div>
-        </main>
-    )
+            <div className="bg-white rounded-xl shadow-lg p-6 flex-1 border-t-4 border-blue-400">
+              <h2 className="text-2xl font-bold text-blue-600 mb-2">Our Vision</h2>
+              <p className="text-gray-600">To be the leading force in transforming ideas into reality, fostering a world where everyone thrives together.</p>
+            </div>
+          </div>
+          <div className="bg-gradient-to-r from-amber-200 to-blue-200 rounded-xl shadow-md p-8 max-w-3xl mx-auto">
+            <h3 className="text-xl font-semibold text-amber-800 mb-3">Why Choose Watawara?</h3>
+            <ul className="list-disc list-inside text-left text-gray-700 space-y-2">
+              <li>Innovative products and services tailored to your needs</li>
+              <li>Customer-centric approach with 24/7 support</li>
+              <li>Community-driven values and social impact</li>
+              <li>Trusted by thousands worldwide</li>
+            </ul>
+          </div>
+          
+        </div>
+      </main>
+    );
 }

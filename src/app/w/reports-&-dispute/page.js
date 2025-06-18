@@ -75,9 +75,9 @@ export default function Home() {
               </svg>
               Quick Access
             </h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 max-md:grid-cols-1 gap-4">
               <Link
-                href="#"
+                href="/w/reports-&dispute"
                 className="flex items-center p-3 bg-white rounded-lg hover:bg-primary/5 transition-all duration-300 group"
               >
                 <svg
@@ -93,10 +93,12 @@ export default function Home() {
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                   />
                 </svg>
-                <span className="font-medium">Track My Dispute</span>
+                <span className="font-medium text-gray-600">
+                  Track My Dispute
+                </span>
               </Link>
               <Link
-                href="#"
+                href="/w/purchase-protection"
                 className="flex items-center p-3 bg-white rounded-lg hover:bg-primary/5 transition-all duration-300 group"
               >
                 <svg
@@ -112,10 +114,12 @@ export default function Home() {
                     d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                   />
                 </svg>
-                <span className="font-medium">Buyer Protection</span>
+                <span className="font-medium text-gray-600">
+                  Purchase Protection
+                </span>
               </Link>
               <Link
-                href="#"
+                href="/w/contact-us"
                 className="flex items-center p-3 bg-white rounded-lg hover:bg-primary/5 transition-all duration-300 group"
               >
                 <svg
@@ -131,10 +135,12 @@ export default function Home() {
                     d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                   />
                 </svg>
-                <span className="font-medium">Contact Support</span>
+                <span className="font-medium text-gray-600">
+                  Contact Support
+                </span>
               </Link>
               <Link
-                href="#"
+                href="/w/frequently-asked-question"
                 className="flex items-center p-3 bg-white rounded-lg hover:bg-primary/5 transition-all duration-300 group"
               >
                 <svg
@@ -150,7 +156,7 @@ export default function Home() {
                     d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <span className="font-medium">FAQs</span>
+                <span className="font-medium text-gray-600">FAQs</span>
               </Link>
             </div>
           </div>
@@ -260,9 +266,7 @@ export default function Home() {
                     10MB each)
                   </p>
                 </div>
-                <div className="mt-4 flex flex-wrap gap-2" id="preview">
-                  {/* File previews would be rendered here */}
-                </div>
+                <div className="mt-4 flex flex-wrap gap-2" id="preview"></div>
               </div>
             </div>
 
@@ -331,7 +335,7 @@ export default function Home() {
             <div>
               <button
                 type="submit"
-                className="w-full py-4 px-6 bg-primary text-white text-lg font-semibold rounded-lg hover:bg-primary-dark transform hover:scale-[1.02] transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-primary/30"
+                className="w-full py-2 px-6 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-dark transform hover:scale-[1.02] transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-primary/30"
               >
                 <svg
                   className="w-5 h-5 inline mr-2"

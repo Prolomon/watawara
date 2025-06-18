@@ -1,66 +1,30 @@
-"use client"; // This is a Client Component
+"use server"
 
-import { useState, useRef, useEffect } from 'react';
-// Import mammoth instead of docx-preview
-import mammoth from 'mammoth';
+import { Privacy } from "@/backend/models/privacy.schema"
+import { dbConnect } from "@/backend/server/server"
 
-export default function Home () {
-    // Removed selectedFile state as we are fetching a specific file
-    const previewContainerRef = useRef(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchAndRenderDoc = async () => {
-            if (!previewContainerRef.current) {
-                return; // Ensure the container is available
-            }
+export default async function Home () {
+    await dbConnect()
 
-            setLoading(true);
-            setError(null);
-            previewContainerRef.current.innerHTML = ''; // Clear previous content
+    const privacy = await Privacy.findOne({ status: true })
 
-            try {
-                // Fetch the .docx file from the public directory
-                const response = await fetch('/documents/privacy-policy.docx');
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                // Get the file content as an ArrayBuffer (mammoth.js works with ArrayBuffer)
-                const arrayBuffer = await response.arrayBuffer();
-
-                // Use mammoth.js to convert the docx ArrayBuffer to HTML
-                const result = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
-
-                // Insert the generated HTML into the preview container
-                previewContainerRef.current.innerHTML = result.value;
-
-                console.log("DOCX preview rendered successfully using mammoth.js");
-
-            } catch (err) {
-                console.error("Error fetching or rendering DOCX preview:", err);
-                setError("Failed to load or render the document.");
-                previewContainerRef.current.innerHTML = '<p style="color: red;">Error loading document: ' + (err.message || 'Unknown error') + '</p>';
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchAndRenderDoc();
-
-    }, []); // Empty dependency array means this effect runs only once on mount
+    const data = <div dangerouslySetInnerHTML={{ __html: privacy?.privacy }} />
 
     return (
-        // Modified main class to take full width and removed padding/margins
-        <main className="w-full">
-            {/* You might want to keep the header content centered or add padding here */}
-            <div className="w-11/12 py-4 mx-auto">
-                {loading && <p className="w-11/12 mx-auto">Loading document preview...</p>}
-                {error && <p className="w-11/12 mx-auto" style={{ color: 'red' }}>{error}</p>}
-                <div ref={previewContainerRef} className="text-gray-600 docx"></div>
-            </div>
-        </main>
-    )
+      <main className="w-full">
+        <div className="w-11/12 py-4 mx-auto">
+          <h1 className="text-2xl font-extrabold text-wrap">
+            Terms and Conditions
+          </h1>
+          <h5 className="text-muted-foreground text-sm my-1 inline-flex items-center">
+            {new Date(privacy?.createdAt).toDateString()} |{" "}
+            <i>(by {privacy?.author})</i>
+          </h5>
+          <div className="border border-muted-foreground p-4 rounded-md mt-2">
+            {data}
+          </div>
+        </div>
+      </main>
+    );
 }

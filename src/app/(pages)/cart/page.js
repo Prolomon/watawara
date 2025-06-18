@@ -1,7 +1,6 @@
 export const dynamic = "force-dynamic";
 import Orders from "./Orders";
 import Checkout from "./Checkout";
-import Coupon from "./Coupon";
 import { images } from "@/constants";
 
 export const metadata = {
@@ -71,12 +70,12 @@ export default async function Home({ searchParams }) {
   return (
     <div className="w-full h-full relative bg-white mt-6">
       <h1 className="text-xl font-bold text-black mb-3">Your Cart</h1>
-      <div className="w-full mx-auto mb-6 flex max-md:flex-col gap-3">
-        <Orders search={search} />
-        <div className="w-2/5 max-md:w-full inline-flex flex-col gap-3">
-          <Coupon />
+      <div className="w-full mx-auto mb-6 flex max-md:flex-col gap-3 relative">
+        <div className="w-3/5 max-md:w-full">
+          <Orders search={search} />
           <Checkout />
         </div>
+        <div className="w-2/5 max-md:w-full inline-flex flex-col gap-3"></div>
       </div>
     </div>
   );

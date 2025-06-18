@@ -7,7 +7,8 @@ import Input from "@/utilities/input/Input";
 import { login } from "@/backend/action/user";
 import { signIn } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { Loader } from "@/components/loader/loader";
 
 export function LoginForm() {
   const router = useRouter();
@@ -15,56 +16,9 @@ export function LoginForm() {
   const [message, setMessage] = useState("");
   const [isPending, setIsPending] = useState(false);
 
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   setIsPending(true);
-  //   setError(null); // Clear previous errors
-  //   const formData = new FormData(event.currentTarget);
-
-  //   try {
-  //     const result = await login(formData); // This calls your server action
-
-  //     if (result?.error) {
-  //       let errorMessage = result.error;
-  //       // Clean up the "Read more at..." link if present
-  //       if (typeof errorMessage === "string") {
-  //         const linkText =
-  //           "Read more at https://errors.authjs.dev#credentialssignin"; // Or other error links
-  //         if (errorMessage.includes(linkText)) {
-  //           errorMessage = errorMessage.replace(linkText, "").trim();
-  //         }
-  //       }
-
-  //       // Handle specific error types from Auth.js or your custom AuthErrors
-  //       if (result.error === "CredentialsSignin") {
-  //          setError("Invalid email or password. Please try again.");
-  //       } else if (result.error === "AccountInactive") { // Changed from "Account inactive"
-  //          setError("Your account is inactive. Please check your email or contact support.");
-  //          // Optionally, redirect to OTP or a specific page:
-  //          // router.push(`/auth/activate?email=${formData.get("email")}`);
-  //       } else if (result.error === "AccountBanned") { // Changed from "Account banned"
-  //          setError("Your account has been banned. Please contact support.");
-  //       } else {
-  //          // Display the error message from NextAuth or a generic one
-  //          setError(errorMessage || "Login failed. Please try again.");
-  //       }
-  //     } else if (result?.ok) {
-  //       // Login successful
-  //       router.push("/");
-  //     } else {
-  //       // Fallback for unexpected response structure
-  //       setError("An unexpected issue occurred during login. Please try again.");
-  //     }
-  //   } catch (e) {
-  //     console.error("Login form submission error:", e);
-  //     setError("Failed to submit login form. Please check your connection.");
-  //   } finally {
-  //     setIsPending(false);
-  //   }
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsPending(true)
 
     // try {
     const formData = new FormData(e.target);
@@ -81,6 +35,7 @@ export function LoginForm() {
 
     if (result.success) {
       router.replace("/");
+      setIsPending(false)
     }
   };
 
@@ -108,6 +63,7 @@ export function LoginForm() {
 
   return (
     <div className="w-1/2 px-4 py-8 max-md:p-0 max-md:w-full mx-auto h-full grid place-content-center bg-white">
+      {isPending && <Loader />}
       <Image
         priority
         width={100}
@@ -124,12 +80,15 @@ export function LoginForm() {
       </h5>
 
       {/* Display error message */}
-      {!message?.success && (
-        <div className="my-2 p-3 bg-red-100 border border-red-300 text-red-700 text-sm rounded text-center">
-          {/* Display the cleaned error state directly */}
-          {message?.message}
+      {message.message && message.success === true ? (
+        <div className="text-sm text-green-600 py-2">
+          {message.message}
         </div>
-      )}
+      ) : message.success === false ? (
+        <div className="text-sm text-red-600 py-2">
+          {message.message}
+        </div>
+      ) : null}
 
       {/* login form - Use onSubmit */}
       <form onSubmit={handleSubmit} className="my-2">
@@ -177,7 +136,7 @@ export function LoginForm() {
       <div className="block mt-1">
         <button
           type="button"
-          onClick={handleGoogleSignIn}
+          // onClick={handleGoogleSignIn}
           className="w-full rounded-md border border-gray-600 outline-none text-gray-800 text-sm px-2 py-1.5 mt-2 bg-transparent capitalize flex gap-2 items-center justify-center cursor-pointer disabled:opacity-50"
         >
           <Image

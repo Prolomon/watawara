@@ -6,7 +6,7 @@ export default function Checkout() {
     <div className="w-full mb-3">
       <div className="text-gray-500 text-sm p-2 border border-gray-500 rounded-md">
         <span className="text-base font-semibold text-gray-600">
-          Import Notice:{" "}
+          Important Notice:{" "}
         </span>
         <span>
           Make sure to have selected the color or the quantity of the product

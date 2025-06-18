@@ -1,9 +1,9 @@
+import { AlarmClock, Box, Hand, Lightbulb, Mail, Package, Phone } from "lucide-react";
 import Image from "next/image";
 
 export default function Home() {
   return (
     <main className="mx-auto w-11/12">
-
       <section className="mb-8">
         <h2 className="text-2xl font-bold mb-6 text-primary">
           Choose Your Shipping Speed
@@ -11,13 +11,13 @@ export default function Home() {
         <div className="grid md:grid-cols-3 gap-6">
           <div className="bg-gradient-to-br from-white to-amber-50 rounded-xl p-6 shadow-lg hover:shadow-xl border border-muted transition-all duration-300 transform hover:-translate-y-1">
             <div className="flex flex-col h-full">
-              <h3 className="text-xl font-semibold mb-3 text-amber-900">
+              <h3 className="text-xl font-semibold mb-3 text-primary">
                 Standard Shipping
               </h3>
               <div className="bg-white/50 rounded-lg p-4 mb-4">
-                <p className="text-amber-700 font-medium">7-14 business days</p>
-                <p className="text-green-600 font-bold mt-2">
-                  FREE on orders over $50
+                <p className="text-amber-400 font-medium">7-14 business days</p>
+                <p className="text-primary font-bold mt-2">
+                  FREE on orders over ₦1000
                 </p>
               </div>
               <div className="mt-auto">
@@ -36,7 +36,7 @@ export default function Home() {
               <div className="bg-white/50 rounded-lg p-4 mb-4">
                 <p className="text-purple-700 font-medium">3-5 business days</p>
                 <p className="text-purple-900 font-bold mt-2">
-                  +$15 shipping fee
+                  +₦3500 shipping fee
                 </p>
               </div>
               <div className="mt-auto">
@@ -55,7 +55,7 @@ export default function Home() {
               <div className="bg-white/50 rounded-lg p-4 mb-4">
                 <p className="text-rose-700 font-medium">1-2 business days</p>
                 <p className="text-rose-900 font-bold mt-2">
-                  +$25 shipping fee
+                  +₦5200 shipping fee
                 </p>
               </div>
               <div className="mt-auto">
@@ -77,7 +77,7 @@ export default function Home() {
             <div className="flex-1">
               <ul className="space-y-4">
                 <li className="flex items-center gap-3">
-                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-amber-100 text-amber-400">
+                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-amber-100 text-primary">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-5 w-5"
@@ -96,7 +96,7 @@ export default function Home() {
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-amber-100 text-amber-400">
+                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-amber-100 text-primary">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-5 w-5"
@@ -115,7 +115,7 @@ export default function Home() {
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-amber-100 text-amber-400">
+                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-amber-100 text-primary">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-5 w-5"
@@ -134,7 +134,7 @@ export default function Home() {
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-amber-100 text-amber-400">
+                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-amber-100 text-primary">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-5 w-5"
@@ -153,7 +153,7 @@ export default function Home() {
                   </span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-amber-100 text-amber-400">
+                  <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-amber-100 text-primary">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-5 w-5"
@@ -187,14 +187,20 @@ export default function Home() {
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-bold mb-6 text-primary">
-          Important Delivery Details 📦
+        <h2 className="text-2xl font-bold mb-6 text-primary inline-flex gap-2 items-center">
+          Important Delivery Details
+          <Package
+            className="h-8 w-8"
+            fill="#f59e0b"
+            color="#ffffff"
+            strokeWidth={1}
+          />
         </h2>
         <div className="bg-gradient-to-br from-white to-amber-50 rounded-xl p-8 shadow-lg border border-amber-100 hover:shadow-xl transition-all duration-300">
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-6">
               <div className="flex items-start gap-4">
-                <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-amber-100 text-amber-400">
+                <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-amber-100 text-primary">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5"
@@ -209,7 +215,7 @@ export default function Home() {
                   </svg>
                 </span>
                 <div>
-                  <h3 className="text-lg font-semibold text-amber-400 mb-2">
+                  <h3 className="text-lg font-semibold text-primary mb-2">
                     Address Accuracy
                   </h3>
                   <p className="text-gray-700">
@@ -221,7 +227,7 @@ export default function Home() {
               </div>
 
               <div className="flex items-start gap-4">
-                <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-amber-100 text-amber-400">
+                <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-amber-100 text-primary">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5"
@@ -232,7 +238,7 @@ export default function Home() {
                   </svg>
                 </span>
                 <div>
-                  <h3 className="text-lg font-semibold text-amber-400 mb-2">
+                  <h3 className="text-lg font-semibold text-primary mb-2">
                     Apartment Deliveries
                   </h3>
                   <p className="text-gray-700">
@@ -244,7 +250,7 @@ export default function Home() {
               </div>
 
               <div className="flex items-start gap-4">
-                <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-amber-100 text-amber-400">
+                <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-amber-100 text-primary">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5"
@@ -260,7 +266,7 @@ export default function Home() {
                   </svg>
                 </span>
                 <div>
-                  <h3 className="text-lg font-semibold text-amber-400 mb-2">
+                  <h3 className="text-lg font-semibold text-primary mb-2">
                     Signature Required
                   </h3>
                   <p className="text-gray-700">
@@ -273,24 +279,25 @@ export default function Home() {
             </div>
 
             <div className="bg-white/50 rounded-xl p-6 border border-amber-50">
-              <h3 className="text-lg font-semibold text-amber-400 mb-4">
-                Pro Delivery Tips 💡
+              <h3 className="text-lg font-semibold text-primary mb-4 inline-flex items-center gap-2">
+                Pro Delivery Tips{" "}
+                <Lightbulb className="h-5 w-5" fill="#f59e0b" />
               </h3>
               <ul className="space-y-3">
                 <li className="flex items-center gap-2 text-gray-700">
-                  <span className="text-amber-500">•</span>
+                  <span className="text-primary">•</span>
                   Add delivery instructions in the notes section
                 </li>
                 <li className="flex items-center gap-2 text-gray-700">
-                  <span className="text-amber-500">•</span>
+                  <span className="text-primary">•</span>
                   Enable SMS notifications for delivery updates
                 </li>
                 <li className="flex items-center gap-2 text-gray-700">
-                  <span className="text-amber-500">•</span>
+                  <span className="text-primary">•</span>
                   Consider weather protection for your deliveries
                 </li>
                 <li className="flex items-center gap-2 text-gray-700">
-                  <span className="text-amber-500">•</span>
+                  <span className="text-primary">•</span>
                   Have a safe spot for leaving packages
                 </li>
               </ul>
@@ -300,34 +307,40 @@ export default function Home() {
       </section>
 
       <section className="mb-8">
-        <h2 className="text-3xl font-bold mb-6 text-primary">
-          Need Help? We&apos;re Here! 👋
+        <h2 className="text-3xl font-bold mb-6 text-primary inline-flex items-center gap-2">
+          Need Help? We&apos;re Here!{" "}
+          <Hand className="h-6 w-6" fill="#f59e0b" />
         </h2>
         <div className="flex flex-col md:flex-row gap-8 items-center">
           <div className="flex-1 bg-gradient-to-br from-white to-amber-50 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-amber-100">
             <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-              Have questions about your shipment? Our friendly customer service team is ready to assist you!
+              Have questions about your shipment? Our friendly customer service
+              team is ready to assist you!
             </p>
             <div className="space-y-4">
               <div className="flex items-center gap-3 bg-white/70 p-3 rounded-lg hover:bg-white/90 transition-all">
-                <span className="text-amber-500 text-2xl">📧</span>
+                <Mail className="text-primary text-2xl" />
                 <div>
-                  <p className="text-sm text-gray-500">Email Us</p>
-                  <p className="text-amber-600 font-semibold">support@watawara.com</p>
+                  <p className="text-sm text-gray-400">Email Us</p>
+                  <p className="text-primary font-semibold">
+                    support@watawara.com
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-3 bg-white/70 p-3 rounded-lg hover:bg-white/90 transition-all">
-                <span className="text-amber-500 text-2xl">📞</span>
+                <Phone className="text-primary text-2xl" />
                 <div>
-                  <p className="text-sm text-gray-500">Call Us</p>
-                  <p className="text-amber-600 font-semibold">1-800-WATAWARA</p>
+                  <p className="text-sm text-gray-400">Call Us</p>
+                  <p className="text-primary font-semibold">1-800-WATAWARA</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 bg-white/70 p-3 rounded-lg hover:bg-white/90 transition-all">
-                <span className="text-amber-500 text-2xl">⏰</span>
+                <AlarmClock className="text-primary text-2xl" />
                 <div>
-                  <p className="text-sm text-gray-500">Business Hours</p>
-                  <p className="text-amber-600 font-semibold">Monday - Friday, 9AM - 5PM EST</p>
+                  <p className="text-sm text-gray-400">Business Hours</p>
+                  <p className="text-primary font-semibold">
+                    Monday - Friday, 9AM - 5PM EST
+                  </p>
                 </div>
               </div>
             </div>

@@ -30,7 +30,7 @@ export default function Delivery({express}) {
             In-Store Pickup
           </label>
         </div>
-        <span className="text-base font-semibold">{Currency(0)}</span>
+        <span className="text-base">{Currency(0)}</span>
       </div>
       <div className="w-full flex gap-2 justify-between">
         <div className="w-full flex gap-2 items-center" onClick={handleClick}>
@@ -44,7 +44,7 @@ export default function Delivery({express}) {
             Express Delivery
           </label>
         </div>
-        <span className="text-base font-semibold">{Currency(2500)}</span>
+        <span className="text-base">{Currency(2500)}</span>
       </div>
     </li>
   );

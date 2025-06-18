@@ -1,11 +1,11 @@
 export const dynamic = "force-dynamic";
-
-import Address from "./Address";
+import Coupon from "./Coupon";
+import Address from "@/utilities/address/Address";
 import Checkout from "./Checkout";
 import { images } from "@/constants";
 
 export const metadata = {
-  metadataBase: new URL('https://watawara.vercel.app/'),
+  metadataBase: new URL("https://watawara.vercel.app/"),
   title: `Watawara | Checkout`,
   description: `Unlock incredible savings with exclusive coupons and discounts on Watawara. Shop now and enjoy unbeatable prices on your favorite products!`,
   icons: {
@@ -63,13 +63,18 @@ export const metadata = {
     //   },
     // },
   },
-}
+};
 
 export default async function Home() {
   return (
-    <div className="w-11/12 my-4 relative mx-auto bg-white">
-      <Checkout />
-      <Address />
+    <div className="w-full my-4 relative mx-auto flex max-md:flex-col gap-3 bg-white">
+      <div className="w-4/6">
+        <Checkout />
+      </div>
+      <div className="w-2/6 grid gap-2">
+        <Coupon />
+        <Address />
+      </div>
     </div>
   );
 }

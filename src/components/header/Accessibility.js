@@ -28,6 +28,7 @@ export default async function Accessibility({ quantity }) {
             carts={user?.cart.length}
             orders={orders?.length}
             wishlists={user?.wishlist.length}
+            checkout={user?.checkout.products.length}
           />
           {/* /wallet/${wallet.uniqueId ? wallet?.uniqueId : "sign-up"} */}
           <Link

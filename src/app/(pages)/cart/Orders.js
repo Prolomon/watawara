@@ -17,7 +17,7 @@ export default async function Orders({ search }) {
   return (
     <>
       <ul
-        className={`w-3/5 max-md:w-full relative  ${order ? null : "w-full"}`}
+        className={`w-full relative}`}
       >
         {search.delete && <Popover message={`Product Deleted from Cart`} />}
         {search.checkout && <Popover message={`Product Added to Checkout`} />}
