@@ -21,8 +21,7 @@ export async function Mailer(email, body, subject) {
     });
 
     if (error) {
-      console.error("Email sending failed:", error);
-      throw new Error("Failed to send email");
+      throw new Error("Failed to send email" + error.message);
     }
 
     return data;

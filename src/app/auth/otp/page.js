@@ -86,13 +86,13 @@ export default function Home() {
           </form>
           <div className="text-sm text-gray-500 text-center my-2">
             By verifying, you have agreed to out{" "}
-            <p href="/wata/privacy-policy" className=" hover:underline">
+            <Link href="/w/privacy-policy" className=" hover:underline">
               Privacy Policy
-            </p>{" "}
+            </Link>{" "}
             and{" "}
-            <p href="/wata/terms-and-conditions" className=" hover:underline">
+            <Link href="/w/terms-and-conditions" className=" hover:underline">
               Terms and conditions
-            </p>
+            </Link>
           </div>
           <br />
           <br />

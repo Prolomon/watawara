@@ -76,15 +76,14 @@ export async function login(formData) {
       maxAge: 60 * 60 * 24 * 30, // 7 days in seconds
     });
 
-    if (user.status === "inactive") {
-      await Mailer(email, "otp", otp);
-      return {
-        success: false,
-        message: "User account is not active. Please activate your account.",
-      };
-    }
+    // if (user.status === "inactive") {
+    //   return {
+    //     success: false,
+    //     message: "User account is not active. Please activate your account.",
+    //   };
+    // }
 
-    await Mailer(email, Login, "Login Security Alert");
+    // await Mailer(email, Login, "Login Security Alert");
 
     return {
       success: true,
@@ -193,7 +192,7 @@ export async function resetPassword(formData) {
       };
     }
 
-    await Mailer(email, Password, "Password Change Successful");
+    // await Mailer(email, Password, "Password Change Successful");
     return {
       success: true,
       message: "Wrong OTP provided",
@@ -234,8 +233,7 @@ export async function forgottenPassword(e) {
       expires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes expiry
     });
 
-    await Mailer(email, PasswordOtp, "Password Reset OTP");
-
+    // await Mailer(email, PasswordOtp, "Password Reset OTP");
 
     return {
       success: true,
@@ -260,8 +258,9 @@ export async function deleteAccount(formData) {
     expires: new Date(Date.now() + 10 * 60 * 1000),
   });
   (await cookies())?.delete("auth.watawara.session");
-  await signOut();
-  await Mailer(email, Deleted, "Login Security Alert");
+
+  // await Mailer(email, Deleted, "Login Security Alert");
+
   (await cookies()).set("auth.watawara.otp", await hash(String(otp), 10), {
     expires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes expiry
   });
@@ -327,7 +326,7 @@ export const createAccount = async (formData) => {
       };
     }
 
-    await Mailer(email, Mail, "Account Creation Successful");
+    // await Mailer(email, Mail, "Account Creation Successful");
 
     return {
       success: true,
