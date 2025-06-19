@@ -36,6 +36,8 @@ export function LoginForm() {
     if (result.success) {
       router.replace("/");
       setIsPending(false)
+    } else {
+      setIsPending(false);
     }
   };
 

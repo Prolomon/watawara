@@ -12,6 +12,11 @@ import { Otp } from "@/utilities/currency/Otp";
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 import { authCookie } from "../authCookie";
+import { Login } from "@/utilities/mails/Login";
+import { Mail } from "@/utilities/mails/Mail";
+import { Otp as PasswordOtp } from "@/utilities/mails/Otp";
+import { Password } from "@/utilities/mails/Password";
+import { Deleted } from "@/utilities/mails/Delete";
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET || "");
 
@@ -21,8 +26,6 @@ export async function login(formData) {
     const email = formData.get("email");
     const password = formData.get("password");
 
-    console.log(email, password);
-
     if (!email || !password) {
       return {
         success: false,
@@ -31,6 +34,7 @@ export async function login(formData) {
     }
 
     const user = await User.findOne({ email });
+    const otp = await Otp();
 
     if (!user) {
       return {
@@ -72,12 +76,15 @@ export async function login(formData) {
       maxAge: 60 * 60 * 24 * 30, // 7 days in seconds
     });
 
-    // if (user.status === "inactive") {
-    //   return {
-    //     success: false,
-    //     message: "User account is not active. Please activate your account.",
-    //   };
-    // }
+    if (user.status === "inactive") {
+      await Mailer(email, "otp", otp);
+      return {
+        success: false,
+        message: "User account is not active. Please activate your account.",
+      };
+    }
+
+    await Mailer(email, Login, "Login Security Alert");
 
     return {
       success: true,
@@ -95,7 +102,7 @@ export async function login(formData) {
 export const logout = async () => {
   // Use the server-side signOut from auth.js
   (await cookies())?.delete("auth.watawara.session");
-  await signOut();
+  redirect("/auth/login")
 };
 
 export const updateAccount = async (formData) => {
@@ -186,7 +193,7 @@ export async function resetPassword(formData) {
       };
     }
 
-    // await Mailer(email, "reset");
+    await Mailer(email, Password, "Password Change Successful");
     return {
       success: true,
       message: "Wrong OTP provided",
@@ -227,7 +234,8 @@ export async function forgottenPassword(e) {
       expires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes expiry
     });
 
-    // await Mailer(email, "otp", otp);
+    await Mailer(email, PasswordOtp, "Password Reset OTP");
+
 
     return {
       success: true,
@@ -253,7 +261,14 @@ export async function deleteAccount(formData) {
   });
   (await cookies())?.delete("auth.watawara.session");
   await signOut();
-  await Mailer(email, "deleteOtp", otp);
+  await Mailer(email, Deleted, "Login Security Alert");
+  (await cookies()).set("auth.watawara.otp", await hash(String(otp), 10), {
+    expires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes expiry
+  });
+
+  (await cookies()).set("auth.watawara.email", email, {
+    expires: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes expiry
+  });
   redirect("/auth/otp?email=" + email + "&authType=deletion");
 }
 
@@ -312,7 +327,7 @@ export const createAccount = async (formData) => {
       };
     }
 
-    // await Mailer(email, "welcome", otp);
+    await Mailer(email, Mail, "Account Creation Successful");
 
     return {
       success: true,
@@ -358,7 +373,8 @@ export const userOtp = async (formData) => {
       };
 
     const result = await User.updateOne(
-      { email },
+      { email: optObj.email },
+
       { status: "active", otp: null }
     );
 
