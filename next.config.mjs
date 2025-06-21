@@ -41,6 +41,7 @@ const nextConfig = {
   },
   env: {
     WATAWARA_BASE_URL: process.env.WATAWARA_BASE_URL,
+    MONGODB_URI: process.env.MONGODB_URI,
   },
 };
 

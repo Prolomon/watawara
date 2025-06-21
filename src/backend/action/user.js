@@ -1,5 +1,5 @@
 "use server";
-import { signOut } from "../../../auth";
+import { signOut, signIn } from "../../../auth";
 import { redirect } from "next/navigation";
 import { auth } from "../../../auth";
 import { User } from "../models/user.schema";
@@ -22,7 +22,6 @@ const secret = new TextEncoder().encode(process.env.JWT_SECRET || "");
 
 export async function login(formData) {
   try {
-    await dbConnect();
     const email = formData.get("email");
     const password = formData.get("password");
 
@@ -33,57 +32,21 @@ export async function login(formData) {
       };
     }
 
-    const user = await User.findOne({ email });
-    const otp = await Otp();
-
-    if (!user) {
-      return {
-        success: false,
-        message: "Invalid user Email and Password provided to authenticate.",
-      };
-    }
-
-    // The compare function needs to be awaited as it returns a Promise
-    const isMatch = await compare(password, user.password);
-
-    if (!isMatch) {
-      return {
-        success: false,
-        message: "Invalid user Email and Password provided to authenticate.",
-      };
-    }
-
-    // Ensure JWT_SECRET is not empty
-    if (!process.env.JWT_SECRET) {
-      throw new Error("JWT_SECRET is not configured");
-    }
-
-    const jwt = await new SignJWT({
-      id: user._id.toString(), // Convert ObjectId to string
-      email: user.email,
-      role: user.role,
-    })
-      .setProtectedHeader({ alg: "HS256" })
-      .setIssuedAt() // Add issued at time
-      .setExpirationTime("7d")
-      .sign(secret);
-
-      (await cookies()).set("auth.watawara.session", jwt, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 30, // 7 days in seconds
+    // Use NextAuth credentials provider for login
+    const result = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
     });
 
-    // if (user.status === "inactive") {
-    //   return {
-    //     success: false,
-    //     message: "User account is not active. Please activate your account.",
-    //   };
-    // }
-
-    // await Mailer(email, Login, "Login Security Alert");
+    if (result?.error) {
+      return {
+        success: false,
+        message:
+          result.error ||
+          "Invalid user Email and Password provided to authenticate.",
+      };
+    }
 
     return {
       success: true,
@@ -101,7 +64,7 @@ export async function login(formData) {
 export const logout = async () => {
   // Use the server-side signOut from auth.js
   (await cookies())?.delete("auth.watawara.session");
-  redirect("/auth/login")
+  redirect("/auth/login");
 };
 
 export const updateAccount = async (formData) => {

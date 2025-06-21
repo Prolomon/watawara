@@ -28,6 +28,7 @@ export default function SimilarProducts() {
 
     fetchProducts();
   }, [limit]); // Add dependency array to prevent infinite loop
+  
 
   const handleClick = () => {
     setLimit((prevLimit) => prevLimit + 10);
