@@ -26,4 +26,4 @@
 //   ],
 // };
 
-export { auth as middleware } from "./auth.js";
+//export { auth as middleware } from "./auth.js";
